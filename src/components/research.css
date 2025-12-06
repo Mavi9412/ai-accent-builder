@@ -1,0 +1,118 @@
+/* src/research.css */
+
+/* Main section styling */
+.research-section {
+  text-align: center;
+  padding: 30px 40px;
+  background: #f8fafc;
+}
+
+/* Heading */
+.research-heading {
+  font-size: 2.2rem;
+  color: #4A89DC;
+  font-weight: 700;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+/* Divider */
+.research-divider {
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(74,137,220,0.3), rgba(74,137,220,1), rgba(74,137,220,0.3));
+  margin: 0 auto 20px;
+  border-radius: 2px;
+}
+
+/* Subheading */
+.research-subheading {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Container holding all cards */
+.research-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Single research card */
+.research-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  width: 380px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: transform 0.3s;
+  flex: 0 0 auto;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  margin-top: 30px;
+}
+
+.research-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Icon container */
+.research-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #4A89DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Title */
+.research-card h3 {
+  font-size: 1.2rem;
+  color: #1f2937;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* Card description */
+.research-card .card-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  min-height: 60px;
+}
+
+/* Metric container */
+.metric-container {
+  margin-top: 15px;
+  padding: 10px 0;
+}
+
+/* Metric value - the numbers/percentages */
+.metric-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #4A89DC;
+}
+
+/* Metric label - the text below numbers */
+.metric-label {
+  font-size: 0.9rem;
+  color: #6b7280;
+}

@@ -1,0 +1,318 @@
+/* Settings.css - Styles for the settings page
+ * This stylesheet contains all styles related to the Settings component, including:
+ * - Layout styles for the page structure
+ * - Card styling for each settings section
+ * - Form element styles
+ * - Toggle switch styles
+ * - Button styles
+ * - Responsive design adjustments
+ */
+
+/* -------------------- LAYOUT STYLES -------------------- */
+/* Main container for the entire settings page */
+.settings-page {
+  display: flex; /* Enables side-by-side layout with sidebar */
+}
+
+/* Main content container styles */
+.settings-container {
+  padding: 30px;
+  min-height: 100vh; /* Ensures the container takes at least the full viewport height */
+  background: linear-gradient(135deg, #f6f9fc 0%, #f1f5f9 100%); /* Subtle gradient background */
+}
+
+/* Page header styles for the title and description */
+.settings-header {
+  text-align: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow); /* Uses global shadow variable for consistency */
+}
+
+/* Settings page title */
+.settings-header h1 {
+  font-size: 2.5rem;
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+}
+
+/* Settings page subtitle/description */
+.settings-header p {
+  color: var(--light-text);
+  max-width: 600px; /* Constrains text width for better readability */
+  margin: 0 auto; /* Centers the paragraph */
+}
+
+/* -------------------- SETTINGS CARDS GRID -------------------- */
+/* Grid layout for the settings cards */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive grid that adapts to screen size */
+  gap: 25px; /* Space between grid items */
+  margin-bottom: 40px;
+}
+
+/* Individual settings card styling */
+.settings-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 25px;
+  transition: var(--transition); /* Smooth animation for hover effects */
+}
+
+/* Hover effect for settings cards */
+.settings-card:hover {
+  transform: translateY(-5px); /* Slight lift effect on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+/* Card section title styling */
+.settings-card h2 {
+  color: var(--secondary-color);
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+/* Icon styling in card titles */
+.settings-card h2 i {
+  color: var(--primary-color); /* Makes icons stand out with brand color */
+}
+
+/* -------------------- FORM STYLES -------------------- */
+/* Container for form input groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Form input labels */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--secondary-color);
+  font-weight: 500; /* Semi-bold label text */
+}
+
+/* Styling for all input types and select dropdowns */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group select {
+  width: 100%; /* Full width of container */
+  padding: 12px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition); /* Smooth transitions for focus states */
+}
+
+/* Focus state styling for inputs and selects */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none; /* Removes default browser outline */
+  border-color: var(--primary-color); /* Highlights border with brand color */
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1); /* Subtle focus ring */
+}
+
+/* -------------------- TOGGLE SWITCH STYLES -------------------- */
+/* Container for toggle switch and its label */
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  margin-bottom: 15px;
+}
+
+/* Styling for the toggle switch label and icon */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon in toggle label */
+.toggle-label i {
+  color: var(--primary-color);
+}
+
+/* Toggle switch container */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+/* Hide default checkbox input */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Toggle switch track (background) */
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E2E8F0; /* Light gray for unchecked state */
+  transition: var(--transition);
+  border-radius: 24px; /* Fully rounded edges */
+}
+
+/* Toggle switch thumb (the circle that moves) */
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: var(--transition);
+  border-radius: 50%; /* Circle shape */
+}
+
+/* Checked state of the toggle switch */
+input:checked + .toggle-slider {
+  background-color: var(--primary-color); /* Brand color when enabled */
+}
+
+/* Moves the toggle thumb when checked */
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* -------------------- BUTTON STYLES -------------------- */
+/* Container for grouping buttons */
+.button-group {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+  margin-top: 30px;
+}
+
+/* Base button styling */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500; /* Medium weight text */
+  cursor: pointer;
+  transition: var(--transition); /* Smooth hover effects */
+}
+
+/* Primary action button (e.g., Save, Submit) */
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Hover state for primary button */
+.btn-primary:hover {
+  background: #357ABD; /* Slightly darker shade on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+/* Secondary action button (e.g., Cancel, Reset) */
+.btn-secondary {
+  background: #E2E8F0; /* Light gray background */
+  color: var(--secondary-color);
+}
+
+/* Hover state for secondary button */
+.btn-secondary:hover {
+  background: #CBD5E0; /* Slightly darker shade on hover */
+  transform: translateY(-2px);
+}
+
+/* Danger/destructive action button (e.g., Delete) */
+.btn-danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* Hover state for danger button */
+.btn-danger:hover {
+  background: #C0392B; /* Slightly darker shade on hover */
+  transform: translateY(-2px);
+}
+
+/* -------------------- NOTIFICATION LIST STYLES -------------------- */
+/* Container for notification options list */
+.notification-list {
+  margin-top: 20px;
+}
+
+/* Individual notification item styling */
+.notification-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #E2E8F0; /* Separator line between items */
+}
+
+/* Removes border from last notification item */
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+/* Container for notification icon and label */
+.notification-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon in notification item */
+.notification-info i {
+  color: var(--primary-color);
+}
+
+/* -------------------- RESPONSIVE STYLES -------------------- */
+/* Adjustments for smaller screens (tablets and phones) */
+@media (max-width: 768px) {
+  /* Reduce padding for smaller screens */
+  .settings-container {
+    padding: 20px;
+  }
+
+  /* Adjust header padding and font size */
+  .settings-header {
+    padding: 20px;
+  }
+
+  .settings-header h1 {
+    font-size: 2rem; /* Smaller title on mobile */
+  }
+
+  /* Stack cards in a single column on small screens */
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stack buttons vertically on small screens */
+  .button-group {
+    flex-direction: column;
+  }
+
+  /* Make buttons full width on small screens */
+  .btn {
+    width: 100%;
+  }
+  
+  /* Reduce card padding on small screens */
+  .settings-card {
+    padding: 20px;
+  }
+} 

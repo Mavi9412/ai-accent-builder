@@ -1,0 +1,334 @@
+/* src/components/contact/Contact.css */
+
+/* Main Contact Section Styling */
+.contact-section {
+  text-align: center;
+  padding: 50px 40px;
+  background: #f0f6ff; /* Light blue background */
+}
+
+/* Header and title styling */
+.contact-header {
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+/* Main heading */
+.contact-heading {
+  font-size: 2.2rem;
+  color: #4A89DC; /* Blue color for heading */
+  font-weight: 700;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+/* Divider under heading */
+.contact-divider {
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(74,137,220,0.3), rgba(74,137,220,1), rgba(74,137,220,0.3));
+  margin: 0 auto 20px;
+  border-radius: 2px;
+}
+
+/* Subheading text */
+.contact-subheading {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* Contact content layout - cards and form */
+.contact-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+/* Left side with contact info cards */
+.contact-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+/* Contact info card styling */
+.contact-info-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  padding: 25px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s;
+  border: 1px solid #f0f0f0;
+}
+
+.contact-info-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Icon in contact card */
+.contact-icon {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(74, 137, 220, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+/* Title for contact cards */
+.contact-card-title {
+  font-size: 1.1rem;
+  color: #1f2937;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Content within contact cards */
+.contact-card-content {
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+/* Text inside contact info cards */
+.contact-info-text {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+/* Special style for hours text */
+.contact-hours {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Button in contact cards */
+.contact-card-button {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #4A89DC;
+  border: 1px solid #4A89DC;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  margin-top: auto;
+}
+
+.contact-card-button:hover {
+  background-color: #4A89DC;
+  color: white;
+}
+
+/* Right side with contact form */
+.contact-form-container {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Form styling */
+.contact-form {
+  text-align: left;
+}
+
+/* Each form group (label + input) */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Input labels */
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+/* Form inputs styling */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  transition: border-color 0.3s;
+}
+
+/* Focus state for inputs */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4A89DC;
+  box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.1);
+}
+
+/* Character counter */
+.char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 5px;
+}
+
+/* Privacy policy group improved styling */
+.privacy-group {
+  margin-top: 5px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: #4A89DC;
+  cursor: pointer;
+}
+
+.checkbox-wrapper label {
+  font-size: 0.85rem;
+  font-weight: normal;
+  line-height: 1.5;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+/* Privacy policy link */
+.privacy-link {
+  color: #4A89DC;
+  text-decoration: underline;
+}
+
+.privacy-link:hover {
+  color: #2563eb;
+}
+
+/* Form buttons container */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+/* Reset button */
+.reset-button {
+  padding: 10px 20px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.reset-button:hover {
+  background-color: #e5e7eb;
+}
+
+/* Submit button */
+.submit-button {
+  padding: 10px 20px;
+  background-color: #4A89DC;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submit-button:hover {
+  background-color: #357ABD;
+}
+
+/* Icon in submit button */
+.send-icon {
+  margin-left: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .contact-info {
+    grid-template-columns: 1fr 1fr;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-content {
+    flex-direction: column;
+  }
+  
+  .contact-info {
+    max-width: 100%;
+  }
+  
+  .contact-form-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-section {
+    padding: 40px 20px;
+  }
+  
+  .contact-form-container {
+    padding: 20px;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .reset-button, .submit-button {
+    width: 100%;
+  }
+  
+  .submit-button {
+    justify-content: center;
+  }
+} 

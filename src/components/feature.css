@@ -1,0 +1,111 @@
+/* src/components/features.css */
+
+/* Main section styling */
+.features-section {
+  text-align: center;
+  padding: 30px 40px;
+  background: #f8fafc;
+}
+
+/* Heading */
+.features-heading {
+  font-size: 2.2rem;
+  color: #4A89DC;
+  font-weight: 700;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+/* Divider */
+.features-divider {
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(74,137,220,0.3), rgba(74,137,220,1), rgba(74,137,220,0.3));
+  margin: 0 auto 20px;
+  border-radius: 2px;
+}
+
+/* Subheading */
+.features-subheading {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Container holding all cards */
+.features-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Single feature card */
+.feature-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  width: 260px;
+  padding: 20px 15px;
+  text-align: center;
+  transition: transform 0.3s;
+  flex: 0 0 auto;
+  border: 1px solid #f0f0f0;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Icon container */
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  background-color: #4A89DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  position: relative;
+}
+
+.feature-icon::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 90px;
+  height: 90px;
+  background-color: rgba(74, 137, 220, 0.1);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Image */
+.feature-icon img {
+  width: 45%;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Title */
+.feature-card h3 {
+  font-size: 1.1rem;
+  color: #1f2937;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Description */
+.feature-card p {
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}

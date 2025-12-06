@@ -1,0 +1,46 @@
+# AI Accent Builder - Backend Requirements
+
+# FastAPI Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
+
+# Environment
+python-dotenv>=1.0.0
+
+# Speech-to-Text (Vosk - offline)
+vosk>=0.3.45
+
+# Text-to-Speech (Edge TTS - free)
+edge-tts>=6.1.0
+
+# Syllable/Hyphenation
+pyphen>=0.14.0
+
+# Audio Processing
+pydub>=0.25.1
+
+# Advanced Audio Analysis
+librosa>=0.10.0
+numpy>=1.24.0
+scipy>=1.11.0
+soundfile>=0.12.0
+
+# Dynamic Time Warping
+fastdtw>=0.3.4
+
+# Grapheme to Phoneme
+g2p-en>=2.1.0
+
+# HTTP Client
+httpx>=0.25.0
+aiofiles>=23.2.0

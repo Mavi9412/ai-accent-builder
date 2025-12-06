@@ -1,0 +1,69 @@
+/* src/components/hero.css */
+
+/* Hero section background and layout */
+.hero-section {
+  background-color: #3b82f6; /* Light blue */
+  text-align: center;
+  padding: 100px 20px;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><text x="0" y="15" fill="white" opacity="0.05">+</text></svg>');
+}
+
+/* Main title */
+.hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
+
+/* Subtitle text */
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  color: #e0e0e0;
+}
+
+/* Button container */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Start Learning Button */
+.btn-start {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-start:hover {
+  background-color: #1e40af;
+}
+
+/* Learn More Button */
+.btn-learn {
+  background-color: white;
+  color: #4b5563;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.btn-learn:hover {
+  background-color: #f3f4f6;
+}
