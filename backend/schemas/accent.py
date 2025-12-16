@@ -46,6 +46,7 @@ class AccentAnalysisResponse(BaseModel):
     # Statistics
     word_count: int
     error_count: int
+    word_accuracy_percentage: Optional[float] = None  # % of target words correctly transcribed
     audio_duration: float
     
     # Word-level feedback
@@ -59,6 +60,9 @@ class AccentAnalysisResponse(BaseModel):
 
     # Advanced analysis (optional, for detailed feedback)
     advanced_analysis: Optional[dict] = None
+    
+    # Timing comparison (word-by-word timing vs native speaker)
+    timing_comparison: Optional[dict] = None
 
     class Config:
         from_attributes = True
@@ -118,3 +122,15 @@ class GenerateCorrectAudioResponse(BaseModel):
     text: str
     accent: AccentType
     duration: float
+
+
+class PracticeSentence(BaseModel):
+    """A single practice sentence"""
+    id: int
+    text: str
+    difficulty: str  # Easy, Medium, Hard
+
+
+class PracticeSentencesResponse(BaseModel):
+    """Response containing all practice sentences by category"""
+    categories: dict  # {category_name: [PracticeSentence, ...]}

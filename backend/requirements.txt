@@ -44,3 +44,34 @@ g2p-en>=2.1.0
 # HTTP Client
 httpx>=0.25.0
 aiofiles>=23.2.0
+
+# ============ NEW DEPENDENCIES ============
+
+# Audio Enhancement
+noisereduce>=3.0.0
+webrtcvad>=2.0.10
+
+# Grammar Checking (British English)
+language-tool-python>=2.7.1
+
+# Formant Analysis
+praat-parselmouth>=0.4.3
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Report Generation (optional - for PDF export)
+reportlab>=4.0.0
+Pillow>=10.0.0
+
+# NLP / Phoneme Dictionary
+nltk>=3.8.0
+
+# T5 for natural language generation (offline optimized)
+transformers>=4.30.0
+torch>=2.0.0
+optimum>=1.16.0
+onnxruntime>=1.16.0  # Use onnxruntime-gpu if GPU available, otherwise CPU
+accelerate>=0.26.0
+

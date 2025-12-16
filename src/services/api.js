@@ -102,10 +102,19 @@ export const authAPI = {
   },
 
   /**
-   * Logout user
+   * Logout user - calls backend and clears local storage
    */
-  logout: () => {
-    removeToken();
+  logout: async () => {
+    try {
+      // Call backend logout endpoint
+      await apiRequest('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.log('Logout API call failed (token may be expired):', error.message);
+    } finally {
+      // Always clear local tokens regardless of API success
+      removeToken();
+      localStorage.removeItem('token');
+    }
   },
 };
 
@@ -357,6 +366,36 @@ export const progressAPI = {
       body: JSON.stringify(progressData),
     });
   },
+
+  /**
+   * Export progress report as PDF
+   */
+  exportPDF: async () => {
+    const token = getToken();
+    const response = await fetch(`${API_BASE_URL}/api/progress/export/pdf`, {
+      method: 'GET',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Download the PDF
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `progress_report_${new Date().toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+
+    return true;
+  },
 };
 
 // ==================== ACCENT / PRONUNCIATION ====================
@@ -364,11 +403,15 @@ export const progressAPI = {
 export const accentAPI = {
   /**
    * Analyze user's pronunciation from audio file
+   * @param {File} audioFile - The audio file to analyze
+   * @param {string} targetAccent - The target accent (e.g., 'british')
+   * @param {string} targetText - The expected sentence the user should have said
    */
-  analyzeAudio: async (audioFile, targetAccent = 'british') => {
+  analyzeAudio: async (audioFile, targetAccent = 'british', targetText = 'The quick brown fox jumps over the lazy dog.') => {
     const formData = new FormData();
     formData.append('file', audioFile);
     formData.append('target_accent', targetAccent);
+    formData.append('target_text', targetText);
 
     const token = getToken();
     const response = await fetch(`${API_BASE_URL}/api/accent/analyze`, {
@@ -414,6 +457,181 @@ export const accentAPI = {
   compareAudio: async (sessionId) => {
     return apiRequest(`/api/accent/compare/${sessionId}`, {
       method: 'POST',
+    });
+  },
+
+  /**
+   * Get practice sentences organized by category
+   */
+  getSentences: async () => {
+    return apiRequest('/api/accent/sentences');
+  },
+
+  /**
+   * Get phonetic information for a single word
+   * Returns IPA, syllables, respelling
+   */
+  getWordPhonetics: async (word) => {
+    return apiRequest(`/api/accent/phonetics/word/${encodeURIComponent(word)}`);
+  },
+
+  /**
+   * Get phonetic information for all words in a sentence
+   */
+  getSentencePhonetics: async (sentence) => {
+    const formData = new FormData();
+    formData.append('sentence', sentence);
+
+    const token = getToken();
+    const response = await fetch(`${API_BASE_URL}/api/accent/phonetics/sentence`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  },
+
+  /**
+   * Streaming analysis - returns results progressively via Server-Sent Events
+   * @param {File} audioFile - The audio file to analyze
+   * @param {string} targetAccent - The target accent (e.g., 'british')
+   * @param {string} targetText - The expected sentence
+   * @param {Function} onProgress - Callback for progress updates
+   * @returns {Promise} - Resolves when complete
+   */
+  analyzeAudioStream: async (audioFile, targetAccent = 'british', targetText = '', onProgress) => {
+    const formData = new FormData();
+    formData.append('file', audioFile);
+    formData.append('target_accent', targetAccent);
+    formData.append('target_text', targetText);
+
+    const token = getToken();
+
+    return new Promise((resolve, reject) => {
+      fetch(`${API_BASE_URL}/api/accent/analyze-stream`, {
+        method: 'POST',
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
+      }).then(response => {
+        if (!response.ok) {
+          reject(new Error(`HTTP error! status: ${response.status}`));
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        const processStream = () => {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              return;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+
+                  if (onProgress) {
+                    onProgress(data);
+                  }
+
+                  if (data.stage === 'complete') {
+                    resolve(data.data);
+                  } else if (data.stage === 'error') {
+                    reject(new Error(data.message));
+                  }
+                } catch (e) {
+                  console.error('SSE parse error:', e);
+                }
+              }
+            }
+
+            processStream();
+          }).catch(reject);
+        };
+
+        processStream();
+      }).catch(reject);
+    });
+  },
+};
+
+// ==================== GRAMMAR CHECKING ====================
+
+export const grammarAPI = {
+  /**
+   * Full grammar analysis - checks grammar, spelling, style, and provides corrections
+   */
+  fullCheck: async (text) => {
+    return apiRequest('/api/grammar/check', {
+      method: 'POST',
+      body: JSON.stringify({ text, check_type: 'full' }),
+    });
+  },
+
+  /**
+   * Quick grammar check - returns only essential errors (optimized for real-time)
+   */
+  quickCheck: async (text) => {
+    return apiRequest('/api/grammar/quick-check', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  },
+
+  /**
+   * Get word alternatives/synonyms
+   */
+  getAlternatives: async (text) => {
+    return apiRequest('/api/grammar/alternatives', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  },
+
+  /**
+   * Grammar-only check (LanguageTool)
+   */
+  grammarOnly: async (text) => {
+    return apiRequest('/api/grammar/check', {
+      method: 'POST',
+      body: JSON.stringify({ text, check_type: 'grammar' }),
+    });
+  },
+
+  /**
+   * Advanced correction with T5
+   */
+  advancedCorrection: async (text) => {
+    return apiRequest('/api/grammar/check', {
+      method: 'POST',
+      body: JSON.stringify({ text, check_type: 'correction' }),
+    });
+  },
+
+  /**
+   * NLP analysis (missing parts, complexity)
+   */
+  nlpAnalysis: async (text) => {
+    return apiRequest('/api/grammar/check', {
+      method: 'POST',
+      body: JSON.stringify({ text, check_type: 'nlp' }),
     });
   },
 };

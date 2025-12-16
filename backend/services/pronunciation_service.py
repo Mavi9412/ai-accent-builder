@@ -319,8 +319,12 @@ class PronunciationService:
         word_count = len(expected_words)
         avg_score = total_score / word_count if word_count > 0 else 0
         
+        # Calculate timing comparison for each word
+        timing_comparison = self._calculate_word_timing(word_analyses)
+        
         return {
             "word_analyses": word_analyses,
+            "timing_comparison": timing_comparison,
             "overall_score": round(avg_score, 1),
             "word_count": word_count,
             "error_count": error_count,
@@ -380,6 +384,133 @@ class PronunciationService:
                 return f"The pronunciation of '{expected}' differs at position {diff_positions[0]+1}. Focus on the middle sounds."
         
         return f"Your pronunciation of '{expected}' needs improvement. Listen to the correct version."
+    
+    def _calculate_word_timing(self, word_analyses: List[Dict]) -> Dict:
+        """
+        Calculate detailed timing comparison between user and native speaker.
+        Provides ideal timing, actual timing, difference, and early/late indicators.
+        """
+        if not word_analyses:
+            return {"words": [], "total_difference_ms": 0, "summary": "No words to analyze"}
+        
+        # Calculate ideal timing based on syllable count (approx 200ms per syllable for native)
+        NATIVE_MS_PER_SYLLABLE = 200
+        NATIVE_PAUSE_BETWEEN_WORDS_MS = 80
+        
+        timing_words = []
+        total_native_ms = 0
+        total_user_ms = 0
+        current_native_position = 0
+        
+        for i, word_data in enumerate(word_analyses):
+            word = word_data.get("word", "")
+            syllables = word_data.get("syllables", [word])
+            syllable_count = len(syllables) if syllables else 1
+            
+            # Calculate ideal native timing for this word
+            native_word_duration_ms = syllable_count * NATIVE_MS_PER_SYLLABLE
+            native_start_ms = current_native_position
+            native_end_ms = native_start_ms + native_word_duration_ms
+            
+            # Get user timing from timestamps (convert to ms)
+            user_start_ms = word_data.get("timestamp_start", 0) * 1000
+            user_end_ms = word_data.get("timestamp_end", 0) * 1000
+            user_word_duration_ms = user_end_ms - user_start_ms
+            
+            # Fallback if no timestamps: estimate based on native
+            if user_word_duration_ms <= 0:
+                user_word_duration_ms = native_word_duration_ms * (word_data.get("score", 80) / 100)
+                user_start_ms = current_native_position
+                user_end_ms = user_start_ms + user_word_duration_ms
+            
+            # Calculate timing difference
+            timing_diff_ms = user_word_duration_ms - native_word_duration_ms
+            
+            # Determine early/late/on-time status
+            # Within 50ms is "on time", more is late, less is early
+            if abs(timing_diff_ms) <= 50:
+                timing_status = "on_time"
+                timing_label = "✓ On Time"
+            elif timing_diff_ms > 50:
+                timing_status = "late"
+                timing_label = f"🔴 +{int(timing_diff_ms)}ms Late"
+            else:
+                timing_status = "early"
+                timing_label = f"🟡 {int(timing_diff_ms)}ms Early"
+            
+            # Detect extra/missing phonemes based on transcription
+            transcribed = word_data.get("transcribed_as", "")
+            expected = word_data.get("word", "")
+            
+            extra_sounds = []
+            missing_sounds = []
+            
+            if transcribed and expected:
+                # Simple character-level comparison for extra/missing detection
+                expected_clean = expected.lower().strip(".,!?")
+                transcribed_clean = transcribed.lower().strip(".,!?")
+                
+                if len(transcribed_clean) > len(expected_clean):
+                    extra_count = len(transcribed_clean) - len(expected_clean)
+                    extra_sounds.append(f"+{extra_count} extra sound(s)")
+                elif len(transcribed_clean) < len(expected_clean):
+                    missing_count = len(expected_clean) - len(transcribed_clean)
+                    missing_sounds.append(f"-{missing_count} missing sound(s)")
+            
+            timing_words.append({
+                "word": word,
+                "word_index": i,
+                "syllables": syllables,
+                "syllable_count": syllable_count,
+                # Native (ideal) timing
+                "native_start_ms": round(native_start_ms),
+                "native_end_ms": round(native_end_ms),
+                "native_duration_ms": round(native_word_duration_ms),
+                # User timing
+                "user_start_ms": round(user_start_ms),
+                "user_end_ms": round(user_end_ms),
+                "user_duration_ms": round(user_word_duration_ms),
+                # Comparison
+                "timing_diff_ms": round(timing_diff_ms),
+                "timing_status": timing_status,
+                "timing_label": timing_label,
+                # Phoneme issues
+                "extra_sounds": extra_sounds,
+                "missing_sounds": missing_sounds,
+                "is_correct": word_data.get("is_correct", False),
+                "score": word_data.get("score", 0),
+                "ipa": word_data.get("ipa", ""),
+                "feedback": word_data.get("feedback", None)
+            })
+            
+            total_native_ms += native_word_duration_ms
+            total_user_ms += user_word_duration_ms
+            current_native_position = native_end_ms + NATIVE_PAUSE_BETWEEN_WORDS_MS
+        
+        # Calculate summary statistics
+        total_timing_diff = total_user_ms - total_native_ms
+        on_time_count = sum(1 for w in timing_words if w["timing_status"] == "on_time")
+        late_count = sum(1 for w in timing_words if w["timing_status"] == "late")
+        early_count = sum(1 for w in timing_words if w["timing_status"] == "early")
+        
+        # Generate summary
+        if abs(total_timing_diff) <= 200:
+            summary = "Excellent timing! Your pace matches the native speaker well."
+        elif total_timing_diff > 200:
+            summary = f"You spoke {int(total_timing_diff)}ms slower than native. Try to speed up slightly."
+        else:
+            summary = f"You spoke {int(abs(total_timing_diff))}ms faster than native. Slow down for clarity."
+        
+        return {
+            "words": timing_words,
+            "total_native_ms": round(total_native_ms),
+            "total_user_ms": round(total_user_ms),
+            "total_difference_ms": round(total_timing_diff),
+            "on_time_count": on_time_count,
+            "late_count": late_count,
+            "early_count": early_count,
+            "summary": summary
+        }
     
     def detect_stress_patterns(self, word: str) -> Dict:
         """
@@ -463,6 +594,25 @@ class PronunciationService:
         
         return suggestions
     
+    def _convert_numpy_types(self, obj):
+        """Recursively convert numpy types to Python native types for JSON serialization"""
+        import numpy as np
+        
+        if isinstance(obj, dict):
+            return {k: self._convert_numpy_types(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_numpy_types(item) for item in obj]
+        elif isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, (np.bool_,)):
+            return bool(obj)
+        else:
+            return obj
+    
     def analyze_advanced(self, user_audio_path: str, native_audio_path: str,
                          user_text: str, native_text: str) -> Dict:
         """
@@ -486,23 +636,163 @@ class PronunciationService:
                 "fallback": True
             }
         
-        # 1. Phoneme-level comparison
+        # Import new modular services
+        try:
+            from services.british_g2p import british_g2p
+            from services.stress_detector import stress_detector
+            from services.formant_analysis import formant_analyzer
+            has_new_services = True
+        except ImportError:
+            has_new_services = False
+        
+        # NEW: British G2P Analysis
+        british_phonemes = None
+        if has_new_services:
+            try:
+                british_phonemes = british_g2p.convert_sentence(native_text)
+            except Exception as e:
+                print(f"British G2P error: {e}")
+        
+        # NEW: Stress Pattern Analysis
+        stress_analysis = None
+        if has_new_services:
+            try:
+                stress_analysis = stress_detector.analyze_sentence(native_text)
+            except Exception as e:
+                print(f"Stress analysis error: {e}")
+        
+        # NEW: Formant Analysis
+        user_formants = None
+        native_formants = None
+        formant_comparison = None
+        if has_new_services:
+            try:
+                user_formants = formant_analyzer.analyze(user_audio_path)
+                native_formants = formant_analyzer.analyze(native_audio_path)
+                formant_comparison = formant_analyzer.compare_formants(
+                    user_audio_path, native_audio_path
+                )
+            except Exception as e:
+                print(f"Formant analysis error: {e}")
+        
+        # NEW: Advanced Phoneme-Level Analysis
+        advanced_sentence_analysis = None
+        try:
+            from services.advanced_phoneme_service import sentence_analyzer
+            advanced_sentence_analysis = sentence_analyzer.analyze_sentence(
+                user_audio_path, native_audio_path,
+                user_text, native_text
+            )
+        except Exception as e:
+            print(f"Advanced phoneme analysis error: {e}")
+        
+        # 1. Phoneme-level comparison (basic - text derived)
         phoneme_analysis = phoneme_comparison_service.compare_sentences(
             user_text, native_text
         )
         
-        # 2. Audio feature comparison (MFCC, pitch, rhythm)
+        # NEW: HYBRID PRONUNCIATION EVALUATION
+        # Combines phoneme alignment + ML prosody scoring + timing analysis
+        real_phoneme_alignment = None
+        prosody_ml_scores = None
+        try:
+            from services.hybrid_pronunciation_service import hybrid_service
+            
+            # Run hybrid analysis (phoneme + prosody)
+            analysis_result = hybrid_service.analyze_complete(
+                user_audio_path,
+                native_audio_path,
+                user_text,
+                native_text
+            )
+            
+            if 'error' not in analysis_result:
+                # Extract prosody scores for later use
+                prosody_ml_scores = analysis_result.get('prosody_scores', {})
+                
+                real_phoneme_alignment = {
+                    # Per-word analyses
+                    'word_analyses': analysis_result.get('word_analyses', []),
+                    'word_count': analysis_result.get('word_count', 0),
+                    
+                    # Overall scores
+                    'score': analysis_result.get('score', 0),
+                    'phoneme_accuracy': analysis_result.get('phoneme_accuracy', 0),
+                    'timing_accuracy': analysis_result.get('timing_accuracy', 0),
+                    
+                    # Phoneme statistics
+                    'matches': analysis_result.get('matches', 0),
+                    'mismatches': analysis_result.get('mismatches', 0),
+                    'substitutions': analysis_result.get('substitutions', 0),
+                    'insertions': analysis_result.get('insertions', 0),
+                    'deletions': analysis_result.get('deletions', 0),
+                    
+                    # Phoneme strings
+                    'user_phoneme_string': analysis_result.get('user_phoneme_string', ''),
+                    'target_phoneme_string': analysis_result.get('target_phoneme_string', ''),
+                    
+                    # Alignment for UI
+                    'alignment': analysis_result.get('alignment', {'alignments': []}),
+                    
+                    # ML Prosody scores
+                    'prosody_scores': prosody_ml_scores,
+                    
+                    # Method
+                    'method': 'hybrid_pronunciation'
+                }
+                
+                print(f"[HybridPronunciation] Score: {analysis_result.get('score', 0)}%")
+                print(f"[HybridPronunciation] Prosody: {prosody_ml_scores.get('overall', 0)}%")
+            
+        except Exception as e:
+            print(f"Hybrid pronunciation analysis error: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        # 2. Audio feature comparison (old method for backward compatibility)
         audio_comparison = audio_analysis_service.compare_with_dtw(
             user_audio_path, native_audio_path
         )
         
-        # 3. Combine results
+        # 3. REAL ACOUSTIC SIGNAL ANALYSIS (DTW-based comparison)
+        try:
+            from services.acoustic_analysis_service import real_acoustic_service
+            
+            # Run real signal-based DTW analysis
+            acoustic_analysis = real_acoustic_service.compare(
+                user_audio_path, native_audio_path
+            )
+            
+            # Use real acoustic scores
+            prosody_score = acoustic_analysis['scores']['prosody']
+            intonation_score = acoustic_analysis['scores']['intonation']
+            stress_score = acoustic_analysis['scores']['stress']
+            rhythm_timing_score = acoustic_analysis['scores']['rhythm_timing']
+            connected_speech_score = acoustic_analysis['scores']['connected_speech']
+            
+            has_real_acoustic = True
+            
+        except Exception as e:
+            print(f"Real acoustic analysis not available: {e}")
+            # Fallback to old method
+            stress_score = min(100, (audio_comparison.get('duration_similarity', 75) + 
+                                     audio_comparison.get('energy_similarity', 75)) / 2)
+            intonation_score = audio_comparison.get('pitch_similarity', 75)
+            rhythm_timing_score = audio_comparison.get('rhythm_similarity', 75)
+            prosody_score = audio_comparison.get('overall_similarity', 75)
+            word_count = phoneme_analysis.get('word_count', 1)
+            connected_speech_score = min(100, 70 + (10 if word_count > 3 else 0) + 
+                                         (audio_comparison.get('duration_similarity', 75) * 0.2))
+            acoustic_analysis = None
+            has_real_acoustic = False
+        
+        # 4. Combine results - weighted toward real acoustic analysis
         combined_score = (
-            phoneme_analysis['overall_similarity'] * 0.6 +
-            audio_comparison['overall_similarity'] * 0.4
+            phoneme_analysis['overall_similarity'] * 0.5 +
+            (prosody_score + intonation_score + rhythm_timing_score) / 3 * 0.5
         )
         
-        # 4. Generate comprehensive feedback
+        # 5. Generate comprehensive feedback
         all_tips = []
         
         # Add tips from phoneme errors
@@ -525,7 +815,7 @@ class PronunciationService:
                 'tip': fb
             })
         
-        # Calculate detailed category scores
+        # Calculate vowel/consonant scores from phoneme analysis
         vowel_errors = 0
         consonant_errors = 0
         total_vowels = 0
@@ -544,30 +834,16 @@ class PronunciationService:
                 else:
                     total_consonants += 1
         
-        # Calculate category scores (0-100)
+        # Calculate vowel/consonant scores (phoneme-based, not heuristic)
         vowel_score = max(0, 100 - (vowel_errors * 15)) if total_vowels > 0 else 80
         consonant_score = max(0, 100 - (consonant_errors * 12)) if total_consonants > 0 else 80
         
-        # Stress score based on duration patterns
-        stress_score = min(100, (audio_comparison.get('duration_similarity', 75) + 
-                                 audio_comparison.get('energy_similarity', 75)) / 2)
+        # Accent score (combined phoneme + acoustic)
+        accent_score = (phoneme_analysis['overall_similarity'] * 0.5 + 
+                       intonation_score * 0.3 + prosody_score * 0.2)
+
         
-        # Intonation score based on pitch
-        intonation_score = audio_comparison.get('pitch_similarity', 75)
-        
-        # Rhythm & Timing score
-        rhythm_timing_score = audio_comparison.get('rhythm_similarity', 75)
-        
-        # Connected Speech score (linking, elision, assimilation)
-        word_count = phoneme_analysis.get('word_count', 1)
-        connected_speech_score = min(100, 70 + (10 if word_count > 3 else 0) + 
-                                     (audio_comparison.get('duration_similarity', 75) * 0.2))
-        
-        # Accent & Dialect Features score (based on overall similarity)
-        accent_score = (phoneme_analysis['overall_similarity'] * 0.6 + 
-                       audio_comparison.get('pitch_similarity', 75) * 0.4)
-        
-        return {
+        result = {
             'overall_score': round(combined_score, 1),
             'phoneme_score': round(phoneme_analysis['overall_similarity'], 1),
             'prosody_score': round(audio_comparison['overall_similarity'], 1),
@@ -622,13 +898,50 @@ class PronunciationService:
                 }
             },
             
+            # Voice Feature Comparison - Raw extracted data from both voices
+            'voice_comparison': {
+                'user_voice': {
+                    'duration': audio_comparison.get('user_duration', 0),
+                    'pitch_mean': audio_comparison.get('user_features', {}).get('pitch_mean', 0),
+                    'pitch_std': audio_comparison.get('user_features', {}).get('pitch_std', 0),
+                    'energy_mean': audio_comparison.get('user_features', {}).get('energy_mean', 0),
+                    'tempo': audio_comparison.get('user_features', {}).get('tempo', 0),
+                    'mfcc_mean': audio_comparison.get('user_features', {}).get('mfcc_mean', [])[:5]  # First 5 MFCCs
+                },
+                'native_voice': {
+                    'duration': audio_comparison.get('native_duration', 0),
+                    'pitch_mean': audio_comparison.get('native_features', {}).get('pitch_mean', 0),
+                    'pitch_std': audio_comparison.get('native_features', {}).get('pitch_std', 0),
+                    'energy_mean': audio_comparison.get('native_features', {}).get('energy_mean', 0),
+                    'tempo': audio_comparison.get('native_features', {}).get('tempo', 0),
+                    'mfcc_mean': audio_comparison.get('native_features', {}).get('mfcc_mean', [])[:5]
+                },
+                'comparison': {
+                    'pitch_similarity': round(audio_comparison.get('pitch_similarity', 0), 1),
+                    'pitch_variation_similarity': round(audio_comparison.get('pitch_variation_similarity', 0), 1),
+                    'rhythm_similarity': round(audio_comparison.get('rhythm_similarity', 0), 1),
+                    'duration_similarity': round(audio_comparison.get('duration_similarity', 0), 1),
+                    'energy_similarity': round(audio_comparison.get('energy_similarity', 0), 1),
+                    'spectral_similarity': round(audio_comparison.get('spectral_similarity', 0), 1),
+                    'dtw_distance': round(audio_comparison.get('dtw_distance', 0), 2)
+                }
+            },
+            
+            # Phoneme Comparison Details
+            'phoneme_comparison': {
+                'user_text': user_text,
+                'native_text': native_text,
+                'overall_similarity': round(phoneme_analysis['overall_similarity'], 1),
+                'correct_words': phoneme_analysis.get('correct_words', 0),
+                'problem_words': phoneme_analysis.get('problem_words', 0),
+                'word_count': phoneme_analysis.get('word_count', 0)
+            },
+            
             # Detailed phoneme analysis
             'word_analyses': phoneme_analysis.get('word_analyses', []),
-            'correct_words': phoneme_analysis.get('correct_words', 0),
-            'problem_words': phoneme_analysis.get('problem_words', 0),
             'needs_practice': phoneme_analysis.get('needs_practice', []),
             
-            # Prosody details
+            # Prosody details (for backward compatibility)
             'pitch_similarity': audio_comparison.get('pitch_similarity', 0),
             'rhythm_similarity': audio_comparison.get('rhythm_similarity', 0),
             'duration_similarity': audio_comparison.get('duration_similarity', 0),
@@ -639,8 +952,34 @@ class PronunciationService:
             'improvement_tips': all_tips,
             
             # Feature comparison (for visualization)
-            'dtw_distance': audio_comparison.get('dtw_distance', 0)
+            'dtw_distance': audio_comparison.get('dtw_distance', 0),
+            
+            # Real Acoustic Signal Analysis (new comprehensive data)
+            'real_acoustic_analysis': acoustic_analysis if 'acoustic_analysis' in dir() and acoustic_analysis else None,
+            'has_real_acoustic': has_real_acoustic if 'has_real_acoustic' in dir() else False,
+            
+            # NEW: British English Phonemes
+            'british_phonemes': british_phonemes,
+            
+            # NEW: Stress Pattern Analysis
+            'stress_analysis': stress_analysis,
+            
+            # NEW: Formant Analysis (F1, F2, F3, F4)
+            'formant_analysis': {
+                'user': user_formants,
+                'native': native_formants,
+                'comparison': formant_comparison
+            } if formant_comparison else None,
+            
+            # NEW: Advanced Phoneme-Level Analysis (word-by-word with audio)
+            'advanced_sentence_analysis': advanced_sentence_analysis,
+            
+            # NEW: REAL Phoneme Alignment from Audio (actual acoustic phonemes)
+            'real_phoneme_alignment': real_phoneme_alignment
         }
+        
+        # Convert all numpy types to Python native types for JSON serialization
+        return self._convert_numpy_types(result)
 
 
 # Singleton instance

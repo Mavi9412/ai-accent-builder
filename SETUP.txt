@@ -1,0 +1,155 @@
+================================================================================
+                    AI ACCENT BUILDER - SETUP INSTRUCTIONS
+================================================================================
+
+STEP 1: INSTALL PREREQUISITES
+-----------------------------
+Download and install:
+- Node.js 18+        : https://nodejs.org/
+- Python 3.10+       : https://www.python.org/
+- MySQL 8.0+         : https://dev.mysql.com/downloads/
+- FFmpeg             : https://ffmpeg.org/download.html
+
+IMPORTANT: Add FFmpeg to system PATH after installation!
+
+
+STEP 2: SETUP DATABASE (MySQL)
+------------------------------
+Open MySQL command line or workbench and run:
+
+    CREATE DATABASE ai_accent_db;
+
+
+STEP 3: CONFIGURE BACKEND
+-------------------------
+1. Navigate to backend folder:
+   
+   cd backend
+
+2. Create a file named ".env" with this content:
+
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=
+   DB_NAME=ai_accent_db
+   SECRET_KEY=your-secret-key-here
+   GEMINI_API_KEY=AIzaSyCVirLvxF53dqT0Kvh_toLEzO29pgmdFUw
+
+3. Create Python virtual environment:
+
+   python -m venv venv
+
+4. Activate virtual environment:
+
+   Windows:  venv\Scripts\activate
+   Mac/Linux: source venv/bin/activate
+
+5. Install Python packages:
+
+   pip install -r requirements.txt
+   pip install google-generativeai pymysql openai-whisper
+
+6. Download Vosk speech model:
+   - Go to: https://alphacephei.com/vosk/models
+   - Download: vosk-model-small-en-us-0.15
+   - Extract to: backend/data/vosk-model-small-en-us-0.15/
+
+7. Initialize database tables:
+
+   python init_db.py
+
+
+STEP 4: SETUP FRONTEND
+----------------------
+1. Go back to project root:
+
+   cd ..
+
+2. Install Node packages:
+
+   npm install
+
+
+STEP 5: RUN THE APPLICATION
+---------------------------
+Open TWO terminal windows:
+
+TERMINAL 1 (Backend):
+   cd backend
+   venv\Scripts\activate
+   python -m uvicorn main:app --reload --port 8000
+
+TERMINAL 2 (Frontend):
+   npm start
+
+
+STEP 6: ACCESS THE APP
+----------------------
+Frontend:  http://localhost:3000
+Backend:   http://localhost:8000
+API Docs:  http://localhost:8000/docs
+
+
+================================================================================
+                           QUICK COMMANDS REFERENCE
+================================================================================
+
+# Start backend (from backend folder, venv activated):
+python -m uvicorn main:app --reload --port 8000
+
+# Start frontend (from project root):
+npm start
+
+# Test Gemini API:
+python test_gemini.py
+
+
+================================================================================
+                              TROUBLESHOOTING
+================================================================================
+
+Problem: "ffmpeg not found"
+Solution: Install FFmpeg and add to system PATH, restart terminal
+
+Problem: "Module not found"
+Solution: Make sure venv is activated, then: pip install -r requirements.txt
+
+Problem: "Connection refused on port 8000"
+Solution: Start backend first, make sure MySQL is running
+
+Problem: "CORS error"
+Solution: Check CORS_ORIGINS in backend .env file
+
+Problem: "Audio recording fails"
+Solution: Allow microphone access in browser settings
+
+Problem: "Gemini quota exceeded"  
+Solution: Get new API key from https://aistudio.google.com/
+
+
+================================================================================
+                           GEMINI API KEY INFO
+================================================================================
+Current API Key: AIzaSyCVirLvxF53dqT0Kvh_toLEzO29pgmdFUw
+Current Model: gemini-2.5-flash
+
+To get new key: https://aistudio.google.com/app/apikey
+
+
+================================================================================
+                              PROJECT STRUCTURE
+================================================================================
+
+demo/
+├── backend/                  # Python FastAPI backend
+│   ├── main.py              # Entry point
+│   ├── requirements.txt     # Python dependencies
+│   ├── services/            # Business logic
+│   └── data/                # AI models
+├── src/                     # React frontend
+│   └── components/          # UI components
+├── package.json             # Node dependencies
+└── SETUP.txt                # This file
+
+================================================================================

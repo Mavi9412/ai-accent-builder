@@ -1,3 +1,30 @@
+/* Light Mode Variables (default) */
+:root {
+  --bg-primary: #f6f9fc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8fafc;
+  --text-primary: #2C3E50;
+  --text-secondary: #7F8C8D;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --primary-color: #4A90E2;
+  --primary-hover: #357ABD;
+  --success-color: #2ECC71;
+  --warning-color: #F1C40F;
+  --danger-color: #E74C3C;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +32,418 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Dark mode global overrides */
+body.dark-mode .main-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.dark-mode .sidebar {
+  background: linear-gradient(180deg, #16213e 0%, #0f3460 100%);
+}
+
+body.dark-mode .settings-container,
+body.dark-mode .practice-container,
+body.dark-mode .dashboard-container,
+body.dark-mode .progress-container {
+  background: var(--bg-primary);
+}
+
+body.dark-mode .settings-card,
+body.dark-mode .practice-card,
+body.dark-mode .stat-box,
+body.dark-mode .module-card,
+body.dark-mode .chart-card,
+body.dark-mode .modal-content {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5 {
+  color: var(--text-primary);
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode label {
+  color: var(--text-secondary);
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group select:focus {
+  border-color: var(--primary-color);
+}
+
+body.dark-mode .settings-header,
+body.dark-mode .practice-header,
+body.dark-mode .dashboard-header {
+  background: var(--bg-secondary);
+}
+
+body.dark-mode .toggle-label span,
+body.dark-mode .notification-info span {
+  color: var(--text-primary);
+}
+
+body.dark-mode .video-container,
+body.dark-mode .analysis-panel,
+body.dark-mode .score-card,
+body.dark-mode .selected-word-panel {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .main-video {
+  background: #0f0f23;
+}
+
+body.dark-mode .message-content {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .conversation-area {
+  background: var(--bg-secondary);
+}
+
+body.dark-mode .metrics-table td {
+  color: var(--text-primary);
+}
+
+body.dark-mode .metrics-table th {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .followup-section {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(53, 122, 189, 0.15) 100%);
+}
+
+body.dark-mode .drill-card {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .followup-question,
+body.dark-mode .sentence-with-audio p {
+  color: var(--text-primary);
+}
+
+/* Lessons Dark Mode */
+body.dark-mode .lessons-container {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.dark-mode .lessons-header {
+  background: var(--bg-secondary);
+}
+
+body.dark-mode .lessons-header h1 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .lessons-header p {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .course-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .course-card h3 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .course-card p {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .course-stats {
+  border-top-color: var(--border-color);
+}
+
+body.dark-mode .course-stat .label {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .course-stat::after {
+  background: var(--border-color);
+}
+
+body.dark-mode .lesson-list {
+  background: var(--bg-secondary);
+}
+
+body.dark-mode .lesson-list h2 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .lesson-item {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .lesson-item:hover {
+  background: var(--bg-tertiary);
+}
+
+body.dark-mode .lesson-icon {
+  background: var(--bg-tertiary);
+}
+
+body.dark-mode .lesson-info h4 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .lesson-info p {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .start-btn:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+/* Dashboard Analytics Dark Mode */
+body.dark-mode .analytics-section {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .analytics-header {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .analytics-header h2 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .chart-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .chart-card h3 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .chart-container {
+  background: var(--bg-tertiary);
+}
+
+/* Progress Page Dark Mode */
+body.dark-mode .progress-container {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.dark-mode .progress-header {
+  background: var(--bg-secondary);
+}
+
+body.dark-mode .progress-header h1 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .progress-header p {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .achievement-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .achievement-card h3 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .achievement-card p {
+  color: var(--text-secondary);
+}
+
+/* Learning Progress Cards Dark Mode */
+body.dark-mode .progress-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .progress-card h3 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .progress-card p {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .progress-bar-container {
+  background: var(--bg-tertiary);
+}
+
+body.dark-mode .stat-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .stat-card h4 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .stat-card p {
+  color: var(--text-secondary);
+}
+
+/* Practice Page Dark Mode */
+body.dark-mode .practice-area {
+  background: var(--bg-tertiary);
+}
+
+body.dark-mode .practice-area h3 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .practice-text,
+body.dark-mode .practice-prompt {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Practice Modals Dark Mode */
+body.dark-mode .modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .modal-header h2 {
+  color: var(--text-primary);
+}
+
+body.dark-mode .close-modal {
+  color: var(--text-secondary);
+}
+
+body.dark-mode .close-modal:hover {
+  color: var(--danger-color);
+}
+
+body.dark-mode .chat-message.ai .message-content {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-mode .feedback-container {
+  border-top-color: var(--border-color);
+}
+
+body.dark-mode .feedback-title {
+  color: var(--text-primary);
+}
+
+body.dark-mode .feedback-btn {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-mode .feedback-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+body.dark-mode .feedback-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* LiveCall Footer/Controls Dark Mode */
+body.dark-mode .video-controls {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+body.dark-mode .control-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .control-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+body.dark-mode .recording-controls {
+  background: transparent;
+}
+
+body.dark-mode .playback-controls {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .play-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .play-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+body.dark-mode .call-container {
+  background: var(--bg-primary);
+}
+
+body.dark-mode .word-badges {
+  background: transparent;
+}
+
+body.dark-mode .word-badge {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .word-badge:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+body.dark-mode .word-chip {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .pair-word {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .pair-word:hover {
+  background: var(--primary-color);
+  color: white;
 }

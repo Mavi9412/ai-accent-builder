@@ -17,6 +17,30 @@ IPA_TO_ARPABET = {
     'w': 'W', 'j': 'Y'
 }
 
+# ARPABET to IPA mapping (reverse)
+ARPABET_TO_IPA = {
+    'AA': 'ɑ', 'AE': 'æ', 'AH': 'ə', 'AO': 'ɔ', 'AW': 'aʊ',
+    'AY': 'aɪ', 'B': 'b', 'CH': 'tʃ', 'D': 'd', 'DH': 'ð',
+    'EH': 'ɛ', 'ER': 'ɜr', 'EY': 'eɪ', 'F': 'f', 'G': 'g',
+    'HH': 'h', 'IH': 'ɪ', 'IY': 'i', 'JH': 'dʒ', 'K': 'k',
+    'L': 'l', 'M': 'm', 'N': 'n', 'NG': 'ŋ', 'OW': 'oʊ',
+    'OY': 'ɔɪ', 'P': 'p', 'R': 'r', 'S': 's', 'SH': 'ʃ',
+    'T': 't', 'TH': 'θ', 'UH': 'ʊ', 'UW': 'u', 'V': 'v',
+    'W': 'w', 'Y': 'j', 'Z': 'z', 'ZH': 'ʒ'
+}
+
+# ARPABET to simple English respelling (phonetic spelling)
+ARPABET_TO_RESPELLING = {
+    'AA': 'ah', 'AE': 'a', 'AH': 'uh', 'AO': 'aw', 'AW': 'ow',
+    'AY': 'eye', 'B': 'b', 'CH': 'ch', 'D': 'd', 'DH': 'th',
+    'EH': 'eh', 'ER': 'er', 'EY': 'ay', 'F': 'f', 'G': 'g',
+    'HH': 'h', 'IH': 'ih', 'IY': 'ee', 'JH': 'j', 'K': 'k',
+    'L': 'l', 'M': 'm', 'N': 'n', 'NG': 'ng', 'OW': 'oh',
+    'OY': 'oy', 'P': 'p', 'R': 'r', 'S': 's', 'SH': 'sh',
+    'T': 't', 'TH': 'th', 'UH': 'oo', 'UW': 'oo', 'V': 'v',
+    'W': 'w', 'Y': 'y', 'Z': 'z', 'ZH': 'zh'
+}
+
 # Common pronunciation difficulties for Indian English speakers learning British English
 COMMON_DIFFICULTIES = {
     'θ': {'issue': 'th sound (think)', 'tip': 'Place tongue between teeth, blow air'},
@@ -27,6 +51,74 @@ COMMON_DIFFICULTIES = {
     'ə': {'issue': 'schwa sound', 'tip': 'Relax mouth completely'},
     'ɜ': {'issue': 'er sound (bird)', 'tip': 'Lips slightly rounded'},
 }
+
+
+def get_word_phonetics(word: str) -> Dict:
+    """
+    Get comprehensive phonetic information for a word
+    
+    Returns:
+        Dict with ipa, syllables, respelling, and phonemes
+    """
+    try:
+        from g2p_en import G2p
+        g2p = G2p()
+        phonemes = g2p(word.lower())
+        
+        # Filter out spaces and punctuation from phonemes
+        clean_phonemes = [p for p in phonemes if p.strip() and p not in [' ', "'", '-']]
+        
+        # Convert to IPA
+        ipa_list = []
+        for p in clean_phonemes:
+            base_p = ''.join(c for c in p if not c.isdigit())
+            ipa_list.append(ARPABET_TO_IPA.get(base_p, p.lower()))
+        ipa = ''.join(ipa_list)
+        
+        # Get syllables
+        syllable_groups = syllabify(clean_phonemes)
+        syllables = []
+        for group in syllable_groups:
+            syl_respell = []
+            for p in group:
+                base_p = ''.join(c for c in p if not c.isdigit())
+                syl_respell.append(ARPABET_TO_RESPELLING.get(base_p, p.lower()))
+            syllables.append(''.join(syl_respell))
+        
+        # Generate respelling (syllable-separated)
+        respelling = ' · '.join(syllables) if syllables else word.lower()
+        
+        return {
+            'word': word,
+            'ipa': f'/{ipa}/',
+            'syllables': syllables,
+            'syllable_count': len(syllables),
+            'respelling': f'({respelling})',
+            'phonemes': clean_phonemes
+        }
+    except ImportError:
+        # Fallback if g2p_en not available
+        return {
+            'word': word,
+            'ipa': f'/{word.lower()}/',
+            'syllables': [word.lower()],
+            'syllable_count': 1,
+            'respelling': f'({word.lower()})',
+            'phonemes': []
+        }
+
+
+def get_sentence_phonetics(sentence: str) -> List[Dict]:
+    """
+    Get phonetic information for all words in a sentence
+    
+    Returns:
+        List of phonetic info dicts for each word
+    """
+    import re
+    # Extract words (remove punctuation)
+    words = re.findall(r'\b[a-zA-Z]+\b', sentence)
+    return [get_word_phonetics(word) for word in words]
 
 
 def get_ipa_for_word(word: str) -> str:

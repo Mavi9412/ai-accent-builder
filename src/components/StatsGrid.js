@@ -20,24 +20,24 @@ const StatsGrid = () => {
         const dashboardStats = await progressAPI.getDashboardStats();
         setStats([
           {
-            icon: 'fas fa-book',
-            value: dashboardStats.completed_lessons?.toString() || '0',
-            label: 'Completed Lessons'
+            icon: 'fas fa-microphone',
+            value: dashboardStats.pronunciation_sessions?.toString() || '0',
+            label: 'Practice Sessions'
           },
           {
-            icon: 'fas fa-fire',
-            value: dashboardStats.day_streak?.toString() || '0',
-            label: 'Day Streak'
+            icon: 'fas fa-star',
+            value: `${dashboardStats.avg_pronunciation_score?.toFixed(0) || 0}%`,
+            label: 'Avg Pronunciation'
           },
           {
-            icon: 'fas fa-chart-line',
-            value: `${dashboardStats.overall_progress?.toFixed(0) || 0}%`,
-            label: 'Overall Progress'
+            icon: 'fas fa-spell-check',
+            value: dashboardStats.words_practiced?.toString() || '0',
+            label: 'Words Practiced'
           },
           {
             icon: 'fas fa-trophy',
             value: dashboardStats.achievements_unlocked?.toString() || '0',
-            label: 'Achievements Unlocked'
+            label: 'Achievements'
           }
         ]);
       } catch (error) {

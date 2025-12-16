@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { authAPI, accentAPI, progressAPI } from '../services/api';
 import Chart from 'chart.js/auto';
 import './Progress.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import {
   faChartLine,
   faFire,
   faTrophy,
@@ -11,7 +13,9 @@ import {
   faChartBar,
   faCalendarCheck,
   faBolt,
-  faStar
+  faStar,
+  faFilePdf,
+  faDownload
 } from '@fortawesome/free-solid-svg-icons';
 // Recharts imports
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -22,10 +26,14 @@ const Progress = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [chartsInitialized, setChartsInitialized] = useState(false);
-  
+  const [pronunciationSessions, setPronunciationSessions] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+
   // Store chart instances
   const chartsRef = useRef({});
-  
+
   // Store canvas refs
   const chartRefs = {
     skills: useRef(null),
@@ -44,13 +52,31 @@ const Progress = () => {
     if (savedState === 'true') {
       setSidebarCollapsed(true);
     }
+
+    // Fetch pronunciation sessions and dashboard stats
+    const fetchData = async () => {
+      try {
+        const [sessions, stats] = await Promise.all([
+          accentAPI.getSessions(),
+          progressAPI.getDashboardStats()
+        ]);
+        setPronunciationSessions(sessions || []);
+        setDashboardStats(stats);
+      } catch (error) {
+        console.error('Error fetching progress data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Separate effect for chart initialization
   useEffect(() => {
     if (!chartsInitialized) {
       const allRefsReady = Object.values(chartRefs).every(ref => ref.current !== null);
-      
+
       if (allRefsReady) {
         initializeCharts();
         setChartsInitialized(true);
@@ -74,6 +100,19 @@ const Progress = () => {
 
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
+  };
+
+  const handleExportPDF = async () => {
+    setExporting(true);
+    try {
+      await progressAPI.exportPDF();
+      alert('Progress report downloaded successfully!');
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Failed to export report. Please try again.');
+    } finally {
+      setExporting(false);
+    }
   };
 
   const initializeCharts = () => {
@@ -505,19 +544,45 @@ const Progress = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/" className="nav-link sign-out">
+            <a href="#" className="nav-link sign-out" onClick={async (e) => { e.preventDefault(); await authAPI.logout(); window.location.href = '/'; }}>
               <i className="fas fa-sign-out-alt"></i>
               <span>Sign Out</span>
-            </Link>
+            </a>
           </li>
         </ul>
       </div>
 
       <div className={`main-content ${sidebarCollapsed ? 'expanded' : ''}`}>
         <div className="progress-container">
-          <div className="progress-header">
-            <h1>Your Learning Progress</h1>
-            <p>Track your achievements and monitor your language learning journey</p>
+          <div className="progress-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h1>Your Learning Progress</h1>
+              <p>Track your achievements and monitor your language learning journey</p>
+            </div>
+            <button
+              onClick={handleExportPDF}
+              disabled={exporting}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: exporting ? '#6b7280' : '#1a73e8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: exporting ? 'not-allowed' : 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => !exporting && (e.target.style.backgroundColor = '#1557b0')}
+              onMouseOut={(e) => !exporting && (e.target.style.backgroundColor = '#1a73e8')}
+            >
+              <FontAwesomeIcon icon={exporting ? faDownload : faFilePdf} spin={exporting} />
+              {exporting ? 'Exporting...' : 'Export PDF Report'}
+            </button>
           </div>
 
           <div className="stats-grid">
@@ -526,17 +591,17 @@ const Progress = () => {
                 <FontAwesomeIcon icon={faChartLine} />
               </div>
               <div className="stat-content">
-                <h3>Overall Progress</h3>
-                <p className="stat-number">85%</p>
+                <h3>Practice Sessions</h3>
+                <p className="stat-number">{dashboardStats?.pronunciation_sessions || 0}</p>
               </div>
             </div>
             <div className="stat-card">
               <div className="stat-icon">
-                <FontAwesomeIcon icon={faFire} />
+                <FontAwesomeIcon icon={faStar} />
               </div>
               <div className="stat-content">
-                <h3>Day Streak</h3>
-                <p className="stat-number">7</p>
+                <h3>Avg Score</h3>
+                <p className="stat-number">{dashboardStats?.avg_pronunciation_score?.toFixed(0) || 0}%</p>
               </div>
             </div>
             <div className="stat-card">
@@ -544,8 +609,8 @@ const Progress = () => {
                 <FontAwesomeIcon icon={faTrophy} />
               </div>
               <div className="stat-content">
-                <h3>Achievements</h3>
-                <p className="stat-number">12</p>
+                <h3>Words Practiced</h3>
+                <p className="stat-number">{dashboardStats?.words_practiced || 0}</p>
               </div>
             </div>
             <div className="stat-card">
@@ -553,8 +618,8 @@ const Progress = () => {
                 <FontAwesomeIcon icon={faClock} />
               </div>
               <div className="stat-content">
-                <h3>Total Learning Time</h3>
-                <p className="stat-number">45h</p>
+                <h3>Grammar Corrections</h3>
+                <p className="stat-number">{dashboardStats?.grammar_corrections || 0}</p>
               </div>
             </div>
           </div>
@@ -643,32 +708,77 @@ const Progress = () => {
               </div>
             </div>
           </div>
+
+          {/* Recent Practice Sessions */}
+          <div className="recent-sessions-section" style={{ marginTop: '2rem' }}>
+            <h2>Recent Practice Sessions</h2>
+            {pronunciationSessions.length > 0 ? (
+              <div className="sessions-list" style={{ marginTop: '1rem', background: 'white', borderRadius: '12px', padding: '1rem', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #eee', textAlign: 'left' }}>
+                      <th style={{ padding: '1rem' }}>Date</th>
+                      <th style={{ padding: '1rem' }}>Words</th>
+                      <th style={{ padding: '1rem' }}>Score</th>
+                      <th style={{ padding: '1rem' }}>Errors</th>
+                      <th style={{ padding: '1rem' }}>Text</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pronunciationSessions.slice(0, 10).map((session) => (
+                      <tr key={session.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                        <td style={{ padding: '1rem' }}>{new Date(session.created_at).toLocaleDateString()}</td>
+                        <td style={{ padding: '1rem' }}>{session.word_count || 0}</td>
+                        <td style={{ padding: '1rem' }}>
+                          <span style={{
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            background: session.overall_score >= 80 ? '#dcfce7' : session.overall_score >= 60 ? '#fef9c3' : '#fee2e2',
+                            color: session.overall_score >= 80 ? '#166534' : session.overall_score >= 60 ? '#854d0e' : '#991b1b',
+                            fontWeight: '600'
+                          }}>
+                            {session.overall_score}%
+                          </span>
+                        </td>
+                        <td style={{ padding: '1rem' }}>{session.error_count || 0}</td>
+                        <td style={{ padding: '1rem', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {session.transcribed_text}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '12px', color: '#64748b' }}>
+                <p>No practice sessions yet. Start a Live Call to see your progress!</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="user-profile">
         <div className="profile-icon" onClick={toggleProfileDropdown}>
           <i className="fas fa-user"></i>
-          <span className="notification-badge">3</span>
         </div>
         <div className={`profile-dropdown ${profileDropdownOpen ? 'show' : ''}`}>
-          <Link to="/dashboard/profile" className="profile-dropdown-item">
+          <Link to="/dashboard/settings" className="profile-dropdown-item" onClick={() => setProfileDropdownOpen(false)}>
             <i className="fas fa-user-circle"></i>
             <span>My Profile</span>
           </Link>
-          <Link to="/dashboard/settings" className="profile-dropdown-item">
+          <Link to="/dashboard" className="profile-dropdown-item" onClick={() => setProfileDropdownOpen(false)}>
+            <i className="fas fa-home"></i>
+            <span>Dashboard</span>
+          </Link>
+          <Link to="/dashboard/settings" className="profile-dropdown-item" onClick={() => setProfileDropdownOpen(false)}>
             <i className="fas fa-cog"></i>
             <span>Settings</span>
           </Link>
-          <Link to="/dashboard/notifications" className="profile-dropdown-item">
-            <i className="fas fa-bell"></i>
-            <span>Notifications</span>
-            <span className="notification-badge" style={{ marginLeft: 'auto' }}>3</span>
-          </Link>
-          <Link to="/" className="profile-dropdown-item">
+          <a href="#" onClick={async (e) => { e.preventDefault(); await authAPI.logout(); window.location.href = '/'; }} className="profile-dropdown-item logout-item">
             <i className="fas fa-sign-out-alt"></i>
             <span>Logout</span>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

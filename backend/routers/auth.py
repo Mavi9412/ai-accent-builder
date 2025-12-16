@@ -83,3 +83,16 @@ def get_current_user_info(current_user: User = Depends(get_current_active_user))
     """Get current user information"""
     return current_user
 
+
+@router.post("/logout")
+def logout(current_user: User = Depends(get_current_active_user)):
+    """
+    Logout current user.
+    Since JWT tokens are stateless, this endpoint just confirms the logout action.
+    The frontend should remove the token from localStorage.
+    For enhanced security, you could implement a token blacklist here.
+    """
+    return {
+        "message": "Successfully logged out",
+        "user": current_user.email
+    }

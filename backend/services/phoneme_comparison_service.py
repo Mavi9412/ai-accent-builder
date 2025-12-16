@@ -244,6 +244,17 @@ class PhonemeComparisonService:
                 }
                 errors.append(error)
         
+        # Get IPA and syllables using phoneme_utils
+        ipa = None
+        syllables = None
+        try:
+            from utils.phoneme_utils import get_word_phonetics
+            word_phonetics = get_word_phonetics(native_word)
+            ipa = word_phonetics.get('ipa', None)
+            syllables = ' · '.join(word_phonetics.get('syllables', [])) if word_phonetics.get('syllables') else None
+        except Exception:
+            pass  # Fallback if phoneme_utils not available
+        
         return {
             'word': native_word,
             'user_phonemes': user_phonemes,
@@ -251,7 +262,9 @@ class PhonemeComparisonService:
             'similarity': round(similarity, 1),
             'alignments': alignments,
             'errors': errors,
-            'is_correct': similarity >= 90
+            'is_correct': similarity >= 90,
+            'ipa': ipa,
+            'syllables': syllables
         }
     
     def get_correction_tip(self, target_phoneme: str, actual_phoneme: str) -> str:

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { authAPI } from '../services/api';
 
 /**
  * Sidebar navigation component
@@ -10,7 +11,7 @@ import PropTypes from 'prop-types';
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   const location = useLocation();
   const path = location.pathname;
-  
+
   return (
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
@@ -57,10 +58,10 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/" className="nav-link">
+          <a href="#" className="nav-link" onClick={async (e) => { e.preventDefault(); await authAPI.logout(); window.location.href = '/'; }}>
             <i className="fas fa-sign-out-alt"></i>
             <span>Sign Out</span>
-          </Link>
+          </a>
         </li>
       </ul>
     </div>

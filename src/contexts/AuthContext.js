@@ -77,10 +77,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
-   * Logout user
+   * Logout user - calls backend API then clears local state
    */
-  const logout = () => {
-    authAPI.logout();
+  const logout = async () => {
+    await authAPI.logout();
     setUser(null);
     setIsAuthenticated(false);
   };

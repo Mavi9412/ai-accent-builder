@@ -439,30 +439,95 @@
 /* Responsive Styles */
 @media (max-width: 768px) {
   .practice-container {
-    padding: 20px;
+    padding: 15px;
   }
 
   .practice-header {
     padding: 20px;
+    margin-bottom: 25px;
   }
 
   .practice-header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .practice-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .practice-card {
+    padding: 20px;
+  }
+
+  .practice-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+  }
+
+  .practice-icon i {
+    font-size: 1.5rem;
   }
 
   .modal-content {
     width: 95%;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 15px auto;
+    padding: 15px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .practice-area {
+    padding: 15px;
+  }
+
+  .chat-container {
+    height: 250px;
+  }
+
+  .message-content {
+    max-width: 85%;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .message-input {
+    flex-direction: column;
+  }
+
+  .message-input input {
+    width: 100%;
+  }
+
+  .message-input button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .recording-controls {
+    margin-top: 20px;
+    gap: 15px;
+  }
+
+  .record-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 1.3rem;
+  }
+
+  .feedback-buttons {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .user-profile {
-    top: 15px;
-    right: 20px;
+    top: 10px;
+    right: 15px;
   }
 
   .profile-icon {
@@ -472,5 +537,90 @@
 
   .profile-icon i {
     font-size: 1rem;
+  }
+
+  .profile-dropdown {
+    width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .practice-container {
+    padding: 10px;
+  }
+
+  .practice-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .practice-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .practice-header p {
+    font-size: 0.85rem;
+  }
+
+  .practice-card {
+    padding: 15px;
+  }
+
+  .practice-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .practice-stats {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .practice-stat {
+    flex: 1;
+    min-width: 70px;
+  }
+
+  .practice-stat .number {
+    font-size: 1rem;
+  }
+
+  .modal-content {
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .modal-header {
+    margin-bottom: 15px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .close-modal {
+    font-size: 1.2rem;
+  }
+
+  .chat-container {
+    height: 200px;
+    padding: 5px;
+  }
+
+  .message-content {
+    max-width: 90%;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .record-btn {
+    width: 55px;
+    height: 55px;
+    font-size: 1.2rem;
+  }
+
+  .feedback-btn {
+    padding: 8px;
+    font-size: 0.9rem;
   }
 }

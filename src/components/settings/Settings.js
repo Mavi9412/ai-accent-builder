@@ -17,14 +17,14 @@ import './Settings.css';
 const Settings = () => {
   const navigate = useNavigate();
   const { user, logout, updateUser } = useAuth();
-  
+
   // -------------- STATE MANAGEMENT --------------
   // Controls the sidebar collapsed/expanded state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
   // Controls the visibility of the profile dropdown menu
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  
+
   // -------------- FORM STATE --------------
   // State for profile settings form fields
   const [profileForm, setProfileForm] = useState({
@@ -32,31 +32,32 @@ const Settings = () => {
     email: user?.email || '', // User's email address
     language: user?.language || 'english'           // User's preferred learning language
   });
-  
+
   // State for password change form fields
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',  // User's current password for verification
     newPassword: '',      // User's desired new password
     confirmPassword: ''   // Confirmation of new password to ensure accuracy
   });
-  
+
   // State for notification preferences toggles
   const [notifications, setNotifications] = useState({
     email: true,   // Email notifications enabled/disabled
     push: true,    // Push notifications enabled/disabled
     daily: false   // Daily reminder notifications enabled/disabled
   });
-  
+
   // State for application preference toggles
-  const [preferences, setPreferences] = useState({
-    darkMode: false,          // Dark mode theme enabled/disabled
-    soundEffects: true,       // Sound effects enabled/disabled
-    progressTracking: true    // Progress tracking enabled/disabled
-  });
+  // Initialize darkMode from localStorage to prevent flicker/reset
+  const [preferences, setPreferences] = useState(() => ({
+    darkMode: localStorage.getItem('darkMode') === 'true',
+    soundEffects: true,
+    progressTracking: true
+  }));
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  
+
   // -------------- EVENT HANDLERS --------------
   /**
    * Toggles sidebar between collapsed and expanded states
@@ -74,7 +75,7 @@ const Settings = () => {
   const toggleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
   };
-  
+
   /**
    * Handles changes to profile form input fields
    * Updates the profileForm state with new values
@@ -87,7 +88,7 @@ const Settings = () => {
       [id]: value
     });
   };
-  
+
   /**
    * Handles changes to password form input fields
    * Updates the passwordForm state with new values
@@ -100,7 +101,7 @@ const Settings = () => {
       [id]: value
     });
   };
-  
+
   /**
    * Handles changes to notification toggle switches
    * Toggles the specified notification type
@@ -112,7 +113,7 @@ const Settings = () => {
       [type]: !notifications[type]
     });
   };
-  
+
   /**
    * Handles changes to preference toggle switches
    * Toggles the specified preference setting
@@ -124,7 +125,7 @@ const Settings = () => {
       [type]: !preferences[type]
     });
   };
-  
+
   /**
    * Handles profile form submission
    * @param {Object} e - Form submission event
@@ -140,7 +141,7 @@ const Settings = () => {
         email: profileForm.email,
         language: profileForm.language
       });
-      
+
       updateUser(updatedUser);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
     } catch (error) {
@@ -149,7 +150,7 @@ const Settings = () => {
       setLoading(false);
     }
   };
-  
+
   /**
    * Handles password form submission
    * @param {Object} e - Form submission event
@@ -158,7 +159,7 @@ const Settings = () => {
     e.preventDefault();
     setLoading(true);
     setMessage({ type: '', text: '' });
-    
+
     // Validate that new password and confirm password match
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setMessage({ type: 'error', text: 'Passwords do not match!' });
@@ -171,11 +172,11 @@ const Settings = () => {
       setLoading(false);
       return;
     }
-    
+
     try {
       await userAPI.changePassword(passwordForm.currentPassword, passwordForm.newPassword);
       setMessage({ type: 'success', text: 'Password updated successfully!' });
-      
+
       // Reset form fields after successful submission
       setPasswordForm({
         currentPassword: '',
@@ -188,14 +189,14 @@ const Settings = () => {
       setLoading(false);
     }
   };
-  
+
   /**
    * Handles account deletion request
    */
   const handleDeleteAccount = async () => {
     // Show confirmation dialog to prevent accidental deletions
     const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
-    
+
     if (confirmed) {
       setLoading(true);
       try {
@@ -223,8 +224,12 @@ const Settings = () => {
           sound_effects: preferences.soundEffects,
           progress_tracking: preferences.progressTracking
         });
+        // Show brief success feedback
+        setMessage({ type: 'success', text: 'Settings saved!' });
+        setTimeout(() => setMessage({ type: '', text: '' }), 2000);
       } catch (error) {
         console.error('Error saving settings:', error);
+        setMessage({ type: 'error', text: 'Failed to save settings' });
       }
     };
 
@@ -233,6 +238,19 @@ const Settings = () => {
       saveSettings();
     }
   }, [notifications, preferences]);
+
+  /**
+   * Apply dark mode class to body when preference changes
+   */
+  useEffect(() => {
+    if (preferences.darkMode) {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('darkMode', 'false');
+    }
+  }, [preferences.darkMode]);
 
   // -------------- SIDE EFFECTS --------------
   /**
@@ -256,8 +274,20 @@ const Settings = () => {
           soundEffects: settings.sound_effects,
           progressTracking: settings.progress_tracking
         });
+
+        // Apply dark mode immediately when loaded from API
+        if (settings.dark_mode) {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('darkMode', 'true');
+        } else {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('darkMode', 'false');
+        }
       } catch (error) {
         console.error('Error loading settings:', error);
+        // If API fails, fall back to localStorage
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        setPreferences(prev => ({ ...prev, darkMode: savedDarkMode }));
       }
     };
 
@@ -267,21 +297,21 @@ const Settings = () => {
     const handleClickOutside = (event) => {
       const dropdown = document.getElementById('profileDropdown');
       const profileIcon = document.querySelector('.profile-icon');
-      
-      if (dropdown && profileIcon && 
-          !profileIcon.contains(event.target) && 
-          !dropdown.contains(event.target)) {
+
+      if (dropdown && profileIcon &&
+        !profileIcon.contains(event.target) &&
+        !dropdown.contains(event.target)) {
         setShowProfileDropdown(false);
       }
     };
 
     // Add click event listener for detecting outside clicks
     document.addEventListener('click', handleClickOutside);
-    
+
     // Load saved sidebar state from localStorage on component mount
     const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
     setSidebarCollapsed(savedSidebarState);
-    
+
     // Clean up event listener when component unmounts
     return () => {
       document.removeEventListener('click', handleClickOutside);
@@ -292,8 +322,8 @@ const Settings = () => {
   return (
     <div className="settings-page">
       {/* Sidebar navigation component */}
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
+      <Sidebar
+        isCollapsed={sidebarCollapsed}
         toggleSidebar={toggleSidebar}
       />
 
@@ -326,31 +356,31 @@ const Settings = () => {
                 {/* Full Name field */}
                 <div className="form-group">
                   <label htmlFor="fullName">Full Name</label>
-                  <input 
-                    type="text" 
-                    id="fullName" 
-                    value={profileForm.fullName} 
+                  <input
+                    type="text"
+                    id="fullName"
+                    value={profileForm.fullName}
                     onChange={handleProfileChange}
                   />
                 </div>
-                
+
                 {/* Email Address field */}
                 <div className="form-group">
                   <label htmlFor="email">Email Address</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    value={profileForm.email} 
+                  <input
+                    type="email"
+                    id="email"
+                    value={profileForm.email}
                     onChange={handleProfileChange}
                   />
                 </div>
-                
+
                 {/* Learning Language dropdown */}
                 <div className="form-group">
                   <label htmlFor="language">Learning Language</label>
-                  <select 
-                    id="language" 
-                    value={profileForm.language} 
+                  <select
+                    id="language"
+                    value={profileForm.language}
                     onChange={handleProfileChange}
                   >
                     <option value="english">English</option>
@@ -359,7 +389,7 @@ const Settings = () => {
                     <option value="german">German</option>
                   </select>
                 </div>
-                
+
                 {/* Profile form buttons */}
                 <div className="button-group">
                   <button type="submit" className="btn btn-primary" disabled={loading}>
@@ -381,15 +411,15 @@ const Settings = () => {
                     <span>Email Notifications</span>
                   </div>
                   <label className="toggle-switch">
-                    <input 
-                      type="checkbox" 
-                      checked={notifications.email} 
+                    <input
+                      type="checkbox"
+                      checked={notifications.email}
                       onChange={() => handleNotificationChange('email')}
                     />
                     <span className="toggle-slider"></span>
                   </label>
                 </div>
-                
+
                 {/* Push Notifications toggle */}
                 <div className="notification-item">
                   <div className="notification-info">
@@ -397,15 +427,15 @@ const Settings = () => {
                     <span>Push Notifications</span>
                   </div>
                   <label className="toggle-switch">
-                    <input 
-                      type="checkbox" 
-                      checked={notifications.push} 
+                    <input
+                      type="checkbox"
+                      checked={notifications.push}
                       onChange={() => handleNotificationChange('push')}
                     />
                     <span className="toggle-slider"></span>
                   </label>
                 </div>
-                
+
                 {/* Daily Reminders toggle */}
                 <div className="notification-item">
                   <div className="notification-info">
@@ -413,9 +443,9 @@ const Settings = () => {
                     <span>Daily Reminders</span>
                   </div>
                   <label className="toggle-switch">
-                    <input 
-                      type="checkbox" 
-                      checked={notifications.daily} 
+                    <input
+                      type="checkbox"
+                      checked={notifications.daily}
                       onChange={() => handleNotificationChange('daily')}
                     />
                     <span className="toggle-slider"></span>
@@ -431,36 +461,36 @@ const Settings = () => {
                 {/* Current Password field */}
                 <div className="form-group">
                   <label htmlFor="currentPassword">Current Password</label>
-                  <input 
-                    type="password" 
-                    id="currentPassword" 
-                    value={passwordForm.currentPassword} 
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    value={passwordForm.currentPassword}
                     onChange={handlePasswordChange}
                   />
                 </div>
-                
+
                 {/* New Password field */}
                 <div className="form-group">
                   <label htmlFor="newPassword">New Password</label>
-                  <input 
-                    type="password" 
-                    id="newPassword" 
-                    value={passwordForm.newPassword} 
+                  <input
+                    type="password"
+                    id="newPassword"
+                    value={passwordForm.newPassword}
                     onChange={handlePasswordChange}
                   />
                 </div>
-                
+
                 {/* Confirm New Password field */}
                 <div className="form-group">
                   <label htmlFor="confirmPassword">Confirm New Password</label>
-                  <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    value={passwordForm.confirmPassword} 
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    value={passwordForm.confirmPassword}
                     onChange={handlePasswordChange}
                   />
                 </div>
-                
+
                 {/* Password form button */}
                 <div className="button-group">
                   <button type="submit" className="btn btn-primary" disabled={loading}>
@@ -473,7 +503,7 @@ const Settings = () => {
             {/* --------- PREFERENCES CARD --------- */}
             <div className="settings-card">
               <h2><i className="fas fa-cog"></i> Preferences</h2>
-              
+
               {/* Dark Mode toggle */}
               <div className="toggle-group">
                 <div className="toggle-label">
@@ -481,15 +511,15 @@ const Settings = () => {
                   <span>Dark Mode</span>
                 </div>
                 <label className="toggle-switch">
-                  <input 
-                    type="checkbox" 
-                    checked={preferences.darkMode} 
+                  <input
+                    type="checkbox"
+                    checked={preferences.darkMode}
                     onChange={() => handlePreferenceChange('darkMode')}
                   />
                   <span className="toggle-slider"></span>
                 </label>
               </div>
-              
+
               {/* Sound Effects toggle */}
               <div className="toggle-group">
                 <div className="toggle-label">
@@ -497,15 +527,15 @@ const Settings = () => {
                   <span>Sound Effects</span>
                 </div>
                 <label className="toggle-switch">
-                  <input 
-                    type="checkbox" 
-                    checked={preferences.soundEffects} 
+                  <input
+                    type="checkbox"
+                    checked={preferences.soundEffects}
                     onChange={() => handlePreferenceChange('soundEffects')}
                   />
                   <span className="toggle-slider"></span>
                 </label>
               </div>
-              
+
               {/* Progress Tracking toggle */}
               <div className="toggle-group">
                 <div className="toggle-label">
@@ -513,19 +543,19 @@ const Settings = () => {
                   <span>Progress Tracking</span>
                 </div>
                 <label className="toggle-switch">
-                  <input 
-                    type="checkbox" 
-                    checked={preferences.progressTracking} 
+                  <input
+                    type="checkbox"
+                    checked={preferences.progressTracking}
                     onChange={() => handlePreferenceChange('progressTracking')}
                   />
                   <span className="toggle-slider"></span>
                 </label>
               </div>
-              
+
               {/* Delete Account button */}
               <div className="button-group">
-                <button 
-                  className="btn btn-danger" 
+                <button
+                  className="btn btn-danger"
                   onClick={handleDeleteAccount}
                   disabled={loading}
                 >
@@ -539,28 +569,24 @@ const Settings = () => {
 
       {/* User Profile Dropdown Menu */}
       <div className="user-profile">
-        {/* Profile icon with notification badge */}
         <div className="profile-icon" onClick={toggleProfileDropdown}>
           <i className="fas fa-user"></i>
-          <span className="notification-badge">3</span>
         </div>
-        
-        {/* Dropdown menu for user profile options */}
+
         <div className={`profile-dropdown ${showProfileDropdown ? 'show' : ''}`} id="profileDropdown">
-          <a href="profile.html" className="profile-dropdown-item">
+          <a href="#" onClick={(e) => { e.preventDefault(); setShowProfileDropdown(false); }} className="profile-dropdown-item">
             <i className="fas fa-user-circle"></i>
             <span>My Profile</span>
           </a>
-          <a href="settings.html" className="profile-dropdown-item">
-            <i className="fas fa-cog"></i>
-            <span>Settings</span>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard'); setShowProfileDropdown(false); }} className="profile-dropdown-item">
+            <i className="fas fa-home"></i>
+            <span>Dashboard</span>
           </a>
-          <a href="notifications.html" className="profile-dropdown-item">
-            <i className="fas fa-bell"></i>
-            <span>Notifications</span>
-            <span className="notification-badge" style={{marginLeft: 'auto'}}>3</span>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/progress'); setShowProfileDropdown(false); }} className="profile-dropdown-item">
+            <i className="fas fa-chart-line"></i>
+            <span>Progress</span>
           </a>
-          <a href="index.html" className="profile-dropdown-item">
+          <a href="#" onClick={(e) => { e.preventDefault(); logout(); navigate('/'); }} className="profile-dropdown-item logout-item">
             <i className="fas fa-sign-out-alt"></i>
             <span>Logout</span>
           </a>

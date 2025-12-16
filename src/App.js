@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/login.js';
@@ -24,6 +24,14 @@ import ProtectedRoute from './components/ProtectedRoute';
  * Landing page, Login, Signup, Dashboard routes, and feature pages
  */
 function App() {
+  // Initialize dark mode from localStorage on app startup
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+  }, []);
+
   return (
     <Router>
       <div className="App">

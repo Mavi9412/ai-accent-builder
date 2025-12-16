@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import CourseGrid from './lessons/CourseGrid';
 import LessonList from './lessons/LessonList';
+import { authAPI } from '../services/api';
 import './Lessons.css'; // Will create this file next
 
 /**
@@ -11,7 +12,7 @@ import './Lessons.css'; // Will create this file next
 const Lessons = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  
+
   // Toggle sidebar expanded/collapsed state
   const toggleSidebar = () => {
     const newState = !sidebarCollapsed;
@@ -29,20 +30,20 @@ const Lessons = () => {
     const handleClickOutside = (event) => {
       const dropdown = document.getElementById('profileDropdown');
       const profileIcon = document.querySelector('.profile-icon');
-      
-      if (dropdown && profileIcon && 
-          !profileIcon.contains(event.target) && 
-          !dropdown.contains(event.target)) {
+
+      if (dropdown && profileIcon &&
+        !profileIcon.contains(event.target) &&
+        !dropdown.contains(event.target)) {
         setShowProfileDropdown(false);
       }
     };
 
     document.addEventListener('click', handleClickOutside);
-    
+
     // Check for saved sidebar state on component mount
     const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
     setSidebarCollapsed(savedSidebarState);
-    
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -51,8 +52,8 @@ const Lessons = () => {
   return (
     <div className="lessons-page">
       {/* Reuse the Sidebar component */}
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
+      <Sidebar
+        isCollapsed={sidebarCollapsed}
         toggleSidebar={toggleSidebar}
       />
 
@@ -77,23 +78,21 @@ const Lessons = () => {
       <div className="user-profile">
         <div className="profile-icon" onClick={toggleProfileDropdown}>
           <i className="fas fa-user"></i>
-          <span className="notification-badge">3</span>
         </div>
         <div className={`profile-dropdown ${showProfileDropdown ? 'show' : ''}`} id="profileDropdown">
-          <a href="profile.html" className="profile-dropdown-item">
+          <a href="#" onClick={(e) => { e.preventDefault(); window.location.href = '/dashboard/settings'; }} className="profile-dropdown-item">
             <i className="fas fa-user-circle"></i>
             <span>My Profile</span>
           </a>
-          <a href="settings.html" className="profile-dropdown-item">
+          <a href="#" onClick={(e) => { e.preventDefault(); window.location.href = '/dashboard'; }} className="profile-dropdown-item">
+            <i className="fas fa-home"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.location.href = '/dashboard/settings'; }} className="profile-dropdown-item">
             <i className="fas fa-cog"></i>
             <span>Settings</span>
           </a>
-          <a href="notifications.html" className="profile-dropdown-item">
-            <i className="fas fa-bell"></i>
-            <span>Notifications</span>
-            <span className="notification-badge" style={{marginLeft: 'auto'}}>3</span>
-          </a>
-          <a href="index.html" className="profile-dropdown-item">
+          <a href="#" onClick={async (e) => { e.preventDefault(); await authAPI.logout(); window.location.href = '/'; }} className="profile-dropdown-item logout-item">
             <i className="fas fa-sign-out-alt"></i>
             <span>Logout</span>
           </a>

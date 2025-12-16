@@ -250,6 +250,15 @@ class DashboardStats(BaseModel):
     overall_progress: float
     achievements_unlocked: int
     total_learning_time_hours: float
+    # Pronunciation stats
+    pronunciation_sessions: int = 0
+    avg_pronunciation_score: float = 0.0
+    words_practiced: int = 0
+    # Grammar stats
+    grammar_corrections: int = 0
+    # Weekly data for charts
+    weekly_scores: List[float] = []
+    weekly_labels: List[str] = []
 
 
 # Password Change Schema

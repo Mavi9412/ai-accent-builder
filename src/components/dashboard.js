@@ -35,20 +35,20 @@ const Dashboard = () => {
     const handleClickOutside = (event) => {
       const dropdown = document.getElementById('profileDropdown');
       const profileIcon = document.querySelector('.profile-icon');
-      
-      if (dropdown && profileIcon && 
-          !profileIcon.contains(event.target) && 
-          !dropdown.contains(event.target)) {
+
+      if (dropdown && profileIcon &&
+        !profileIcon.contains(event.target) &&
+        !dropdown.contains(event.target)) {
         setShowProfileDropdown(false);
       }
     };
 
     document.addEventListener('click', handleClickOutside);
-    
+
     // Check for saved sidebar state on component mount
     const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
     setSidebarCollapsed(savedSidebarState);
-    
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -56,9 +56,9 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
-        toggleSidebar={toggleSidebar} 
+      <Sidebar
+        isCollapsed={sidebarCollapsed}
+        toggleSidebar={toggleSidebar}
       />
 
       <div className={`main-content ${sidebarCollapsed ? 'expanded' : ''}`}>
@@ -76,22 +76,21 @@ const Dashboard = () => {
             <div className="user-profile">
               <div className="profile-icon" onClick={toggleProfileDropdown}>
                 <i className="fas fa-user"></i>
-                <span className="notification-badge">3</span>
               </div>
               <div className={`profile-dropdown ${showProfileDropdown ? 'show' : ''}`} id="profileDropdown">
-                <a href="profile.html" className="profile-dropdown-item">
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/settings'); setShowProfileDropdown(false); }} className="profile-dropdown-item">
                   <i className="fas fa-user-circle"></i>
                   <span>My Profile</span>
                 </a>
-                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/settings'); }} className="profile-dropdown-item">
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/settings'); setShowProfileDropdown(false); }} className="profile-dropdown-item">
                   <i className="fas fa-cog"></i>
                   <span>Settings</span>
                 </a>
-                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/progress'); }} className="profile-dropdown-item">
-                  <i className="fas fa-bell"></i>
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/progress'); setShowProfileDropdown(false); }} className="profile-dropdown-item">
+                  <i className="fas fa-chart-line"></i>
                   <span>Progress</span>
                 </a>
-                <a href="#" onClick={(e) => { e.preventDefault(); logout(); navigate('/'); }} className="profile-dropdown-item">
+                <a href="#" onClick={(e) => { e.preventDefault(); logout(); navigate('/'); }} className="profile-dropdown-item logout-item">
                   <i className="fas fa-sign-out-alt"></i>
                   <span>Logout</span>
                 </a>
