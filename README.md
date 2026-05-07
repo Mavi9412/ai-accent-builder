@@ -31,9 +31,13 @@
 ## 📖 About
 
 The **AI Accent Builder** follows a complete end-to-end pipeline designed to help non-native speakers develop a natural British English accent through analysis, comparison, and feedback. The process begins when the user records their voice through a microphone using a React-based web interface or a Flutter mobile application. The recorded audio is saved in WebM format and converted to a 16kHz mono WAV file using **pydub** for consistent processing. This audio is then passed to a speech-to-text module, where **Vosk** is used as the primary offline ASR engine and **Whisper** is used as a fallback to improve accuracy. The speech-to-text process produces both the transcribed text and word-level timestamps.
+
 Using the transcribed text, a British English reference speech sample is generated through **pyttsx3** text-to-speech, which represents a correct native British accent. Both the user's speech and the reference British speech are analysed in parallel. Acoustic and accent-related features are extracted using **librosa** and **parselmouth (Praat)**, including pitch (F0), stress intensity, rhythm, intonation patterns, speaking rate, pause duration, MFCCs, and vowel formants (F1, F2, F3). To achieve precise word and phoneme alignment, forced alignment is applied using Vosk timestamps combined with **g2p_en** phoneme mapping.
+
 Accent comparison is then performed using multiple techniques: **Dynamic Time Warping (fastdtw)** aligns pitch, MFCC, and energy features spoken at different speeds; **Pearson correlation** measures similarity in pitch and energy contours; **ratio-based timing analysis** evaluates rhythm and stress balance; and **Levenshtein edit distance** detects pronunciation and phoneme-level deviations. In addition, a custom **PyTorch-based pronunciation scoring model** trained on the **SpeechOcean762** dataset predicts pronunciation quality across accuracy, fluency, completeness, prosody, and overall score.
+
 These results are combined using a **weighted scoring system** that evaluates phoneme accuracy, pitch similarity, timing, stress, vowel quality, and fluency to produce detailed accent scores at sentence, word, and phoneme levels. The feedback is presented visually and audibly through the frontend, where incorrect words and phonemes are highlighted, correct British accent segments are playable, and simple improvement tips are shown. To support natural conversation practice, the transcribed text is also processed through British English grammar and vocabulary modules using **LanguageTool**, **FLAN-T5**, and **spaCy**, while follow-up conversational questions are generated using the **Google Gemini API**. All scores, sessions, and progress data are stored in a **FastAPI** backend with **SQLite**, enabling long-term progress tracking and continuous improvement through repeated practice sessions.
+
 ---
 
 ## ✨ Features
@@ -51,6 +55,7 @@ These results are combined using a **weighted scoring system** that evaluates ph
 | **PDF Reports** | Downloadable assessment reports with charts and detailed scores |
 
 ### 📊 Dashboard
+
 - Modern, responsive UI with smooth animations and transitions
 - Interactive charts powered by **Chart.js**
 - Collapsible sidebar navigation
@@ -523,5 +528,5 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  Built with  for British English learners
+  Built with ❤️ for British English learners
 </p>
