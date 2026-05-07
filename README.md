@@ -779,5 +779,26 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  Built with care for British English learners
+  <img src="https://img.shields.io/badge/-Built_with_Care_for_British_English_Learners-6C5CE7?style=for-the-badge" height="28"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black" height="20"/>
+  <img src="https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-Flutter-02569B?style=flat-square&logo=flutter&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-Mistral-FF7000?style=flat-square&logo=mistral&logoColor=white" height="20"/>
+</p>
+
+---
+<p align="center">
+  <a href="https://drive.google.com/file/d/15uAty1yNqG5xsIgx3JBPfwL0zrY6lZEd/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/▶_Watch_Web_App_Demo-009688?style=for-the-badge&logo=react&logoColor=white" alt="Web App Demo"/>
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://drive.google.com/file/d/1b_vi3f29ZeOyD0_9i-hnDBeP6cTRcTwT/view?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/▶_Watch_Mobile_App_Demo-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Mobile App Demo"/>
+  </a>
 </p>
