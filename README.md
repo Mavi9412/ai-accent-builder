@@ -657,18 +657,18 @@ API Docs:  http://localhost:8000/docs
 
 ### REST Endpoints
 
-| Method | Endpoint | Description |
+| <img src="https://img.shields.io/badge/-Method-E17055?style=flat-square" height="16"/> | <img src="https://img.shields.io/badge/-Endpoint-009688?style=flat-square&logo=fastapi&logoColor=white" height="16"/> | <img src="https://img.shields.io/badge/-Description-636E72?style=flat-square" height="16"/> |
 |--------|----------|-------------|
-| `POST` | `/api/auth/login` | User authentication |
-| `POST` | `/api/auth/register` | User registration |
-| `GET` | `/api/shadowing/sets` | Get practice sentence sets |
-| `GET` | `/api/shadowing/audio/{id}` | Stream native audio |
-| `POST` | `/api/shadowing/assess` | Submit audio for assessment |
-| `POST` | `/api/accent/analyze` | Analyze pronunciation |
-| `POST` | `/api/grammar/check` | Check grammar (British English) |
-| `POST` | `/api/conversation/next` | Generate follow-up question |
-| `GET` | `/api/progress/stats` | User progress analytics |
-| `GET` | `/api/report/generate` | Generate PDF report |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/auth/login` | User authentication |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/auth/register` | User registration |
+| <img src="https://img.shields.io/badge/GET-61AFFE?style=flat-square" height="16"/> | `/api/shadowing/sets` | Get practice sentence sets |
+| <img src="https://img.shields.io/badge/GET-61AFFE?style=flat-square" height="16"/> | `/api/shadowing/audio/{id}` | Stream native audio |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/shadowing/assess` | Submit audio for assessment |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/accent/analyze` | Analyze pronunciation |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/grammar/check` | Check grammar (British English) |
+| <img src="https://img.shields.io/badge/POST-49CC90?style=flat-square" height="16"/> | `/api/conversation/next` | Generate follow-up question |
+| <img src="https://img.shields.io/badge/GET-61AFFE?style=flat-square" height="16"/> | `/api/progress/stats` | User progress analytics |
+| <img src="https://img.shields.io/badge/GET-61AFFE?style=flat-square" height="16"/> | `/api/report/generate` | Generate PDF report |
 
 ### WebSocket Endpoints
 
@@ -752,11 +752,11 @@ Output: [accuracy, fluency, completeness, prosody, total]
 
 ## <img src="https://img.shields.io/badge/-Customization-A29BFE?style=for-the-badge&logo=css3&logoColor=white" height="28"/>
 
-- **Theme colours** — Edit CSS variables in `index.css` under `:root`
-- **Dashboard styles** — Modify `Dashboard.css`
-- **Chart configs** — Update `AnalyticsSection.js`
-- **Scoring weights** — Adjust in `shadowing_analysis_service.py`
-- **British vocabulary** — Extend mapping in `vocabulary_service.py`
+- <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" height="16"/> **Theme colours** — Edit CSS variables in `index.css` under `:root`
+- <img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black" height="16"/> **Dashboard styles** — Modify `Dashboard.css`
+- <img src="https://img.shields.io/badge/-Chart.js-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" height="16"/> **Chart configs** — Update `AnalyticsSection.js`
+- <img src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" height="16"/> **Scoring weights** — Adjust in `shadowing_analysis_service.py`
+- <img src="https://img.shields.io/badge/-NLP-09A3D5?style=flat-square&logo=spacy&logoColor=white" height="16"/> **British vocabulary** — Extend mapping in `vocabulary_service.py`
 
 ---
 
