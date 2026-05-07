@@ -73,22 +73,27 @@ A modern, visually rich dashboard that monitors every aspect of the user's learn
 
 ---
 
-### 🔌 Real-Time WebSocket Architecture
+### 🔌 Real-Time WebSocket Architecture — Talk Like a Real Person
 
-The platform uses **persistent WebSocket connections** for all real-time features, ensuring instant feedback without HTTP overhead:
+The platform uses **persistent WebSocket connections** for all real-time features. During recording, the system processes your speech **live** and responds instantly — giving you the natural, conversational feel of talking to a real person, not waiting for a delayed batch result.
+
+**How it feels:**
+> 🎤 You speak → words appear in real time → phoneme colours update live → the AI tutor responds immediately — just like having a real British English teacher sitting next to you.
 
 ```
 Client (React / Flutter)                    Server (FastAPI)
        │                                          │
-       │ ──── ws://localhost:8000/ws/pronunciation ─►│
+       │ ──── ws://localhost:8000/ws/pronunciation ─►│  ← Connection opened
        │                                          │
        │ ──── Send target text ─────────────────► │
        │                                          │
        │ ──── Stream audio chunks (16kHz) ──────► │  ← Process each chunk
        │                                          │
-       │ ◄──── Phoneme update (every ~500ms) ──── │  ← Vosk partial result
+       │ ◄──── Live transcription ─────────────── │  ← Words appear as you speak
+       │ ◄──── Phoneme update (every ~500ms) ──── │  ← Colour-coded right/wrong
        │ ◄──── Prosody score update ────────────── │  ← librosa + PyTorch
        │ ◄──── Live metric bars ────────────────── │  ← Real-time UI update
+       │ ◄──── AI tutor response (streamed) ────── │  ← Instant conversational reply
        │                                          │
        │ ──── Stop signal ──────────────────────► │
        │ ◄──── Final assessment JSON ───────────── │
@@ -99,41 +104,61 @@ Client (React / Flutter)                    Server (FastAPI)
 
 | Endpoint | Purpose | Data Flow |
 |----------|---------|----------|
-| `/ws/pronunciation` | Real-time phoneme feedback during recording | Audio chunks → phoneme + prosody updates |
-| `/ws/transcribe` | Live transcription display | Audio chunks → partial text updates |
-| `/ws/tutor` | AI tutor conversation stream | User message → streamed LLM response |
+| `/ws/pronunciation` | Real-time phoneme feedback during recording | Audio chunks → live phoneme + prosody updates |
+| `/ws/transcribe` | Live transcription — words appear as you speak | Audio chunks → partial text in real time |
+| `/ws/tutor` | AI tutor conversation — instant replies like a real person | User message → streamed LLM response |
 
 ---
 
-### 🧑‍🏫 AI Tutor — Gemini LLM as Your Real Tutor
+### 🧑‍🏫 AI Tutor — Mistral LLM + Gemini Fallback
 
-The platform integrates **Google Gemini (gemini-2.5-flash)** and **FLAN-T5** as an intelligent, context-aware tutor that behaves like a real British English teacher:
+The platform features an intelligent AI tutor that acts as a **real British English teacher**, powered by a dual-LLM strategy:
+
+- **Primary:** **Mistral LLM** (open-source, self-hosted) — runs locally for fast, private, zero-cost inference
+- **Fallback:** **Google Gemini API** (gemini-2.5-flash) — automatically activated if the system does not support Mistral or local resources are limited
+
+This ensures the tutor is **always available** regardless of hardware.
+
+```
+┌───────────────────────────────────────────────────────────┐
+│                   AI TUTOR ENGINE                         │
+│                                                           │
+│   ① Try Mistral LLM (local, open-source)                 │
+│      └── If supported → fast, private, free              │
+│                                                           │
+│   ② Fallback to Gemini API (cloud)                       │
+│      └── If Mistral unavailable → use gemini-2.5-flash   │
+│                                                           │
+│   ③ Fallback to FLAN-T5 (local, lightweight)             │
+│      └── If no internet → basic grammar + tips           │
+└───────────────────────────────────────────────────────────┘
+```
 
 | Tutor Capability | How It Works |
 |------------------|--------------|
-| **Mistake Analysis** | After each session, the tutor receives your scores, transcription, and error details — then explains exactly what went wrong |
-| **Improvement Tips** | Provides specific, actionable tips like *"Try dropping the 'r' at the end of 'water' — British RP uses a silent 'r'"* |
-| **Follow-Up Questions** | Asks contextual follow-up questions to keep you practising — *"You mentioned going to the shop. What did you buy there?"* |
+| **Mistake Analysis** | Receives your scores, transcription, and error details — explains exactly what went wrong |
+| **How to Improve** | Provides specific, actionable tips like *"Try dropping the 'r' at the end of 'water' — British RP uses a silent 'r'"* |
+| **Follow-Up Questions** | Asks contextual follow-ups to keep you practising — *"You mentioned going to the shop. What did you buy there?"* |
 | **Grammar Feedback** | Highlights grammar mistakes inline with corrections and British English alternatives |
 | **Vocabulary Coaching** | Suggests British vocabulary swaps (e.g., *"store → shop"*, *"apartment → flat"*) |
-| **Encouragement** | Provides positive reinforcement and tracks improvement trends |
+| **Encouragement** | Positive reinforcement with improvement trend tracking |
 | **Adaptive Difficulty** | Adjusts question complexity based on your current skill level |
+| **Conversational Feel** | Responds via WebSocket in real time — feels like chatting with a real person, not waiting for a page reload |
 
 **Tutor Flow:**
 ```
 User speaks → STT transcription → Grammar check → Accent scoring
                                         │
-                                        ▼
-                              ┌──────────────────┐
-                              │   GEMINI LLM     │
-                              │  Context:        │
-                              │  • User message  │
-                              │  • Score: 72%    │
-                              │  • Errors: [..]  │
-                              │  • Skill: B1     │
-                              │  • History: [..] │
-                              └────────┬─────────┘
-                                       │
+                        ┌───────────────┴───────────────┐
+                        ▼                               ▼
+              ┌──────────────────┐            ┌──────────────────┐
+              │  MISTRAL LLM     │    OR      │  GEMINI API      │
+              │  (Primary)       │  ────────► │  (Fallback)      │
+              │  Open-source     │  if not    │  gemini-2.5-flash│
+              │  Self-hosted     │  supported │  Cloud-based     │
+              └────────┬─────────┘            └────────┬─────────┘
+                       │                               │
+                       └───────────────┬───────────────┘
                                        ▼
                               ┌──────────────────┐
                               │ Response:        │
@@ -146,22 +171,22 @@ User speaks → STT transcription → Grammar check → Accent scoring
 
 ---
 
-### 📚 Adaptive Course Engine
+### 📚 Adaptive Course Engine & Auto-Updating Content
 
-The platform **dynamically adjusts course content** based on your performance, mistakes, and skill level — so you always practise what you need most:
+Courses and practice content **change automatically** — the system continuously analyses your reports and mistakes, then updates what you see next. No two users get the same experience.
 
 | Feature | Description |
 |---------|-------------|
 | **Skill-Level Detection** | Automatically classifies user as Beginner / Intermediate / Advanced based on cumulative scores |
 | **Weak-Area Identification** | Analyses the 6 accent metrics to find your weakest areas (e.g., low pitch similarity → more intonation drills) |
-| **Dynamic Content Selection** | Selects practice sentences and exercises that target your specific weaknesses |
+| **Auto Content Updates** | Practice sentences, exercises, and course modules **change automatically** after each session based on your latest report |
 | **Progressive Difficulty** | Gradually increases sentence length, speed, and complexity as you improve |
-| **Mistake-Based Drills** | If you consistently mispronounce certain phonemes (e.g., /θ/ → /t/), the system creates targeted drills |
+| **Mistake-Based Drills** | If you consistently mispronounce certain phonemes (e.g., /θ/ → /t/), the system creates targeted drills automatically |
 | **Course Modules** | Structured modules for Intonation, Stress, Vowels, Connected Speech, and Conversation |
 
 **Adaptive Flow:**
 ```
- Session Scores                     Adaptive Engine                    Updated Content
+ Session Scores                     Adaptive Engine                    Auto-Updated Content
 ┌──────────────┐                  ┌──────────────────┐               ┌──────────────────┐
 │ Phoneme: 85% │                  │ Analyse weakest  │               │ Next Session:    │
 │ Pitch:   62% │ ◄── weakest ──► │ metrics across    │──────────────►│ • Intonation     │
@@ -171,6 +196,54 @@ The platform **dynamically adjusts course content** based on your performance, m
 │ Fluency: 88% │                  │ practice content  │               │ • Vowel drills   │
 └──────────────┘                  └──────────────────┘               └──────────────────┘
 ```
+
+---
+
+### 🗺️ Personalised Learning Roadmap
+
+Every user gets a **unique, auto-generated learning roadmap** based on their performance history, mistake patterns, and goals:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     PERSONAL ROADMAP — User: Ahmed                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Current Level: Intermediate (B1)          Overall Score: 72%          │
+│                                                                         │
+│  ✅ Week 1 — Basics (COMPLETED)                                        │
+│     └── Vowel sounds, basic greetings, simple sentences                │
+│                                                                         │
+│  ✅ Week 2 — Intonation (COMPLETED)                                    │
+│     └── Rising/falling patterns, question intonation                   │
+│                                                                         │
+│  🔄 Week 3 — Stress & Rhythm (IN PROGRESS)          ◄── You are here  │
+│     └── Word stress, sentence rhythm, weak forms                       │
+│     └── Focus: Your stress score is 65% — extra drills added           │
+│                                                                         │
+│  ⬚ Week 4 — Connected Speech (UPCOMING)                                │
+│     └── Linking, elision, assimilation                                 │
+│     └── Auto-adjusted based on Week 3 results                          │
+│                                                                         │
+│  ⬚ Week 5 — Conversation Fluency (UPCOMING)                           │
+│     └── Real-time AI tutor conversations                               │
+│     └── Content will auto-update based on your progress                │
+│                                                                         │
+│  📊 Weak Areas (auto-detected):                                        │
+│     • Pitch similarity: 62% → extra intonation drills scheduled        │
+│     • Vowel quality: 70% → vowel-focused exercises added               │
+│     • /θ/ sound: frequently replaced with /t/ → targeted practice      │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+| Roadmap Feature | Description |
+|-----------------|-------------|
+| **Auto-Generated** | Created automatically when a user completes their first session |
+| **Weekly Structure** | Organised into weekly milestones with clear goals |
+| **Live Updates** | Roadmap updates after every session based on latest scores and mistakes |
+| **Weak-Area Focus** | Automatically schedules extra drills for your weakest metrics |
+| **Phoneme Tracking** | Tracks specific sounds you struggle with and adds targeted practice |
+| **Goal Setting** | Shows target scores and estimated time to reach next level |
 
 ---
 
@@ -276,7 +349,8 @@ The platform **dynamically adjusts course content** based on your performance, m
 | **Whisper** | latest | Fallback STT with higher accuracy (OpenAI) |
 | **PyTorch** | 2.0+ | Custom pronunciation scoring neural network |
 | **FLAN-T5** | google/flan-t5-base | AI-powered grammar correction |
-| **Gemini API** | gemini-2.5-flash | Follow-up conversation generation |
+| **Mistral LLM** | Open-source | Primary AI tutor (self-hosted, private, zero-cost) |
+| **Gemini API** | gemini-2.5-flash | Fallback AI tutor when Mistral is unavailable |
 | **g2p_en** | 2.1.0 | Grapheme-to-phoneme conversion (ARPAbet) |
 
 ### Audio Processing
