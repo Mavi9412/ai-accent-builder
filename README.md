@@ -2,7 +2,7 @@
   <img src="https://img.shields.io/badge/AI-Accent%20Builder-blueviolet?style=for-the-badge&logo=soundcloud&logoColor=white" alt="AI Accent Builder"/>
 </p>
 
-<h1 align="center">🎙️ AI Accent Builder</h1>
+<h1 align="center">AI Accent Builder</h1>
 
 <p align="center">
   <strong>A complete AI-powered British English accent training platform with real-time WebSocket monitoring, adaptive course engine, intelligent LLM tutor, and modern analytics dashboard.</strong>
@@ -14,35 +14,103 @@
   <img src="https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white"/>
   <img src="https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=flat-square&logo=pytorch&logoColor=white"/>
   <img src="https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white"/>
+  <img src="https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square"/>
 </p>
 
 <p align="center">
-  <a href="#-features">Features</a> •
-  <a href="#-system-architecture">Architecture</a> •
-  <a href="#-how-it-works">How It Works</a> •
-  <a href="#-tech-stack">Tech Stack</a> •
-  <a href="#-getting-started">Getting Started</a> •
-  <a href="#-api-reference">API</a>
+  <img src="https://img.shields.io/badge/Google_Gemini-API-8E75B2?style=flat-square&logo=googlegemini&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Mistral_AI-LLM-FF7000?style=flat-square&logo=mistral&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Hugging_Face-FLAN--T5-FFD21E?style=flat-square&logo=huggingface&logoColor=black"/>
+  <img src="https://img.shields.io/badge/OpenAI-Whisper-412991?style=flat-square&logo=openai&logoColor=white"/>
+  <img src="https://img.shields.io/badge/spaCy-NLP-09A3D5?style=flat-square&logo=spacy&logoColor=white"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/WebSocket-Real--Time-010101?style=flat-square&logo=socketdotio&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Chart.js-4.3-FF6384?style=flat-square&logo=chartdotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Dart-3.x-0175C2?style=flat-square&logo=dart&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/CSS3-Styling-1572B6?style=flat-square&logo=css3&logoColor=white"/>
+</p>
+
+<p align="center">
+  <a href="#-1">Features</a> •
+  <a href="#-6">Architecture</a> •
+  <a href="#-7">How It Works</a> •
+  <a href="#-8">Tech Stack</a> •
+  <a href="#-9">Getting Started</a> •
+  <a href="#-10">API</a>
 </p>
 
 ---
 
-## 📖 About
+### Built With
 
-The **AI Accent Builder** follows a complete end-to-end pipeline designed to help non-native speakers develop a natural British English accent through analysis, comparison, and feedback. The process begins when the user records their voice through a microphone using a React-based web interface or a Flutter mobile application. The recorded audio is saved in WebM format and converted to a 16kHz mono WAV file using **pydub** for consistent processing. This audio is then passed to a speech-to-text module, where **Vosk** is used as the primary offline ASR engine and **Whisper** is used as a fallback to improve accuracy. The speech-to-text process produces both the transcribed text and word-level timestamps.
-
-Using the transcribed text, a British English reference speech sample is generated through **pyttsx3** text-to-speech, which represents a correct native British accent. Both the user's speech and the reference British speech are analysed in parallel. Acoustic and accent-related features are extracted using **librosa** and **parselmouth (Praat)**, including pitch (F0), stress intensity, rhythm, intonation patterns, speaking rate, pause duration, MFCCs, and vowel formants (F1, F2, F3). To achieve precise word and phoneme alignment, forced alignment is applied using Vosk timestamps combined with **g2p_en** phoneme mapping.
-
-Accent comparison is then performed using multiple techniques: **Dynamic Time Warping (fastdtw)** aligns pitch, MFCC, and energy features spoken at different speeds; **Pearson correlation** measures similarity in pitch and energy contours; **ratio-based timing analysis** evaluates rhythm and stress balance; and **Levenshtein edit distance** detects pronunciation and phoneme-level deviations. In addition, a custom **PyTorch-based pronunciation scoring model** trained on the **SpeechOcean762** dataset predicts pronunciation quality across accuracy, fluency, completeness, prosody, and overall score.
-
-These results are combined using a **weighted scoring system** that evaluates phoneme accuracy, pitch similarity, timing, stress, vowel quality, and fluency to produce detailed accent scores at sentence, word, and phoneme levels. The feedback is presented visually and audibly through the frontend, where incorrect words and phonemes are highlighted, correct British accent segments are playable, and simple improvement tips are shown. The entire recording and practice experience uses **WebSocket connections** that process speech in real time — words appear as you speak, phonemes are colour-coded live, and the AI tutor responds instantly, giving the natural feel of talking to a real person rather than waiting for a delayed result. To support natural conversation practice, the transcribed text is also processed through British English grammar and vocabulary modules using **LanguageTool**, **FLAN-T5**, and **spaCy**. The system features an intelligent **AI tutor** powered by **Mistral LLM** (open-source, self-hosted) as the primary model for fast, private, zero-cost inference; if the system does not support Mistral, the tutor automatically falls back to the **Google Gemini API (gemini-2.5-flash)** to ensure it is always available regardless of hardware. The platform also includes a **smart monitoring dashboard** with real-time Chart.js analytics, and an **adaptive course engine** that continuously analyses user reports and mistakes to **automatically update courses and practice content** — no two users see the same exercises. Each user receives a **personalised learning roadmap** that auto-generates weekly milestones, identifies weak areas, schedules targeted drills for specific phonemes and metrics, and updates itself after every session based on the latest scores. All scores, sessions, and progress data are stored through a **FastAPI** backend with **SQLite**, ultimately helping users gradually adopt authentic British English accent patterns through personalised, data-driven learning.
+<table>
+  <tr>
+    <td align="center"><img src="https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-React-61DAFB?style=for-the-badge&logo=react&logoColor=black" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" height="24"/></td>
+  </tr>
+  <tr>
+    <td align="center">Backend</td>
+    <td align="center">Web Frontend</td>
+    <td align="center">REST + WS API</td>
+    <td align="center">ML Scoring</td>
+    <td align="center">Mobile App</td>
+  </tr>
+  <tr><td colspan="5"></td></tr>
+  <tr>
+    <td align="center"><img src="https://img.shields.io/badge/-Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-Mistral-FF7000?style=for-the-badge&logo=mistral&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-Whisper-412991?style=for-the-badge&logo=openai&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-FLAN--T5-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-spaCy-09A3D5?style=for-the-badge&logo=spacy&logoColor=white" height="24"/></td>
+  </tr>
+  <tr>
+    <td align="center">AI Tutor (Fallback)</td>
+    <td align="center">AI Tutor (Primary)</td>
+    <td align="center">Speech-to-Text</td>
+    <td align="center">Grammar AI</td>
+    <td align="center">NLP Engine</td>
+  </tr>
+  <tr><td colspan="5"></td></tr>
+  <tr>
+    <td align="center"><img src="https://img.shields.io/badge/-WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" height="24"/></td>
+    <td align="center"><img src="https://img.shields.io/badge/-CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" height="24"/></td>
+  </tr>
+  <tr>
+    <td align="center">Real-Time Comm</td>
+    <td align="center">Database</td>
+    <td align="center">Analytics Charts</td>
+    <td align="center">Frontend Logic</td>
+    <td align="center">Styling</td>
+  </tr>
+</table>
 
 ---
 
-## ✨ Features
+## <img src="https://img.shields.io/badge/-About-2F3542?style=for-the-badge" height="28"/> 
 
-### 🎯 Core Capabilities
+The **AI Accent Builder** follows a complete end-to-end pipeline designed to help non-native speakers develop a natural British English accent through analysis, comparison, and feedback. The process begins when the user records their voice through a microphone using a <img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black" height="18"/> **React**-based web interface or a <img src="https://img.shields.io/badge/-Flutter-02569B?style=flat-square&logo=flutter&logoColor=white" height="18"/> **Flutter** mobile application. The recorded audio is saved in WebM format and converted to a 16kHz mono WAV file using **pydub** for consistent processing. This audio is then passed to a speech-to-text module, where **Vosk** is used as the primary offline ASR engine and <img src="https://img.shields.io/badge/-Whisper-412991?style=flat-square&logo=openai&logoColor=white" height="18"/> **Whisper** is used as a fallback to improve accuracy. The speech-to-text process produces both the transcribed text and word-level timestamps.
+
+Using the transcribed text, a British English reference speech sample is generated through **pyttsx3** text-to-speech, which represents a correct native British accent. Both the user's speech and the reference British speech are analysed in parallel. Acoustic and accent-related features are extracted using **librosa** and **parselmouth (Praat)**, including pitch (F0), stress intensity, rhythm, intonation patterns, speaking rate, pause duration, MFCCs, and vowel formants (F1, F2, F3). To achieve precise word and phoneme alignment, forced alignment is applied using Vosk timestamps combined with **g2p_en** phoneme mapping.
+
+Accent comparison is then performed using multiple techniques: **Dynamic Time Warping (fastdtw)** aligns pitch, MFCC, and energy features spoken at different speeds; **Pearson correlation** measures similarity in pitch and energy contours; **ratio-based timing analysis** evaluates rhythm and stress balance; and **Levenshtein edit distance** detects pronunciation and phoneme-level deviations. In addition, a custom <img src="https://img.shields.io/badge/-PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" height="18"/> **PyTorch**-based pronunciation scoring model trained on the **SpeechOcean762** dataset predicts pronunciation quality across accuracy, fluency, completeness, prosody, and overall score.
+
+These results are combined using a **weighted scoring system** that evaluates phoneme accuracy, pitch similarity, timing, stress, vowel quality, and fluency to produce detailed accent scores at sentence, word, and phoneme levels. The feedback is presented visually and audibly through the frontend, where incorrect words and phonemes are highlighted, correct British accent segments are playable, and simple improvement tips are shown. The entire recording and practice experience uses <img src="https://img.shields.io/badge/-WebSocket-010101?style=flat-square&logo=socketdotio&logoColor=white" height="18"/> **WebSocket** connections that process speech in real time — words appear as you speak, phonemes are colour-coded live, and the AI tutor responds instantly, giving the natural feel of talking to a real person rather than waiting for a delayed result. To support natural conversation practice, the transcribed text is also processed through British English grammar and vocabulary modules using **LanguageTool**, <img src="https://img.shields.io/badge/-FLAN--T5-FFD21E?style=flat-square&logo=huggingface&logoColor=black" height="18"/> **FLAN-T5**, and <img src="https://img.shields.io/badge/-spaCy-09A3D5?style=flat-square&logo=spacy&logoColor=white" height="18"/> **spaCy**. The system features an intelligent **AI tutor** powered by <img src="https://img.shields.io/badge/-Mistral-FF7000?style=flat-square&logo=mistral&logoColor=white" height="18"/> **Mistral LLM** (open-source, self-hosted) as the primary model for fast, private, zero-cost inference; if the system does not support Mistral, the tutor automatically falls back to <img src="https://img.shields.io/badge/-Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white" height="18"/> **Google Gemini API (gemini-2.5-flash)** to ensure it is always available regardless of hardware. The platform also includes a **smart monitoring dashboard** with real-time <img src="https://img.shields.io/badge/-Chart.js-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" height="18"/> **Chart.js** analytics, and an **adaptive course engine** that continuously analyses user reports and mistakes to **automatically update courses and practice content** — no two users see the same exercises. Each user receives a **personalised learning roadmap** that auto-generates weekly milestones, identifies weak areas, schedules targeted drills for specific phonemes and metrics, and updates itself after every session based on the latest scores. All scores, sessions, and progress data are stored through a <img src="https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" height="18"/> **FastAPI** backend with <img src="https://img.shields.io/badge/-SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" height="18"/> **SQLite**, ultimately helping users gradually adopt authentic British English accent patterns through personalised, data-driven learning.
+
+---
+
+## <img src="https://img.shields.io/badge/-Features-6C5CE7?style=for-the-badge&logo=sparkles&logoColor=white" height="28"/>
+
+### <img src="https://img.shields.io/badge/-Core_Capabilities-00B894?style=flat-square" height="22"/>
 
 | Feature | Description |
 |---------|-------------|
@@ -58,7 +126,7 @@ These results are combined using a **weighted scoring system** that evaluates ph
 
 ---
 
-### 📊 Smart Monitoring Dashboard
+### <img src="https://img.shields.io/badge/-Smart_Monitoring_Dashboard-0984E3?style=flat-square&logo=grafana&logoColor=white" height="22"/>
 
 A modern, visually rich dashboard that monitors every aspect of the user's learning journey in real time:
 
@@ -73,12 +141,12 @@ A modern, visually rich dashboard that monitors every aspect of the user's learn
 
 ---
 
-### 🔌 Real-Time WebSocket Architecture — Talk Like a Real Person
+### <img src="https://img.shields.io/badge/-Real--Time_WebSocket-E17055?style=flat-square&logo=socketdotio&logoColor=white" height="22"/> — Talk Like a Real Person
 
 The platform uses **persistent WebSocket connections** for all real-time features. During recording, the system processes your speech **live** and responds instantly — giving you the natural, conversational feel of talking to a real person, not waiting for a delayed batch result.
 
 **How it feels:**
-> 🎤 You speak → words appear in real time → phoneme colours update live → the AI tutor responds immediately — just like having a real British English teacher sitting next to you.
+> You speak → words appear in real time → phoneme colours update live → the AI tutor responds immediately — just like having a real British English teacher sitting next to you.
 
 ```
 Client (React / Flutter)                    Server (FastAPI)
@@ -110,7 +178,7 @@ Client (React / Flutter)                    Server (FastAPI)
 
 ---
 
-### 🧑‍🏫 AI Tutor — Mistral LLM + Gemini Fallback
+### <img src="https://img.shields.io/badge/-AI_Tutor-A29BFE?style=flat-square&logo=openai&logoColor=white" height="22"/> — Mistral LLM + Gemini Fallback
 
 The platform features an intelligent AI tutor that acts as a **real British English teacher**, powered by a dual-LLM strategy:
 
@@ -162,16 +230,16 @@ User speaks → STT transcription → Grammar check → Accent scoring
                                        ▼
                               ┌──────────────────┐
                               │ Response:        │
-                              │ ✅ Feedback      │
-                              │ 💡 Tips          │
-                              │ 📝 Correction    │
-                              │ ❓ Follow-up Q   │
+                              │ [v] Feedback     │
+                              │ [i] Tips         │
+                              │ [>] Correction   │
+                              │ [?] Follow-up Q  │
                               └──────────────────┘
 ```
 
 ---
 
-### 📚 Adaptive Course Engine & Auto-Updating Content
+### <img src="https://img.shields.io/badge/-Adaptive_Course_Engine-FDCB6E?style=flat-square&logo=bookstack&logoColor=black" height="22"/> & Auto-Updating Content
 
 Courses and practice content **change automatically** — the system continuously analyses your reports and mistakes, then updates what you see next. No two users get the same experience.
 
@@ -199,7 +267,7 @@ Courses and practice content **change automatically** — the system continuousl
 
 ---
 
-### 🗺️ Personalised Learning Roadmap
+### <img src="https://img.shields.io/badge/-Personalised_Learning_Roadmap-00CEC9?style=flat-square&logo=roadmapdotsh&logoColor=white" height="22"/>
 
 Every user gets a **unique, auto-generated learning roadmap** based on their performance history, mistake patterns, and goals:
 
@@ -210,13 +278,13 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 │                                                                         │
 │  Current Level: Intermediate (B1)          Overall Score: 72%          │
 │                                                                         │
-│  ✅ Week 1 — Basics (COMPLETED)                                        │
+│  [DONE] Week 1 — Basics (COMPLETED)                                   │
 │     └── Vowel sounds, basic greetings, simple sentences                │
 │                                                                         │
-│  ✅ Week 2 — Intonation (COMPLETED)                                    │
+│  [DONE] Week 2 — Intonation (COMPLETED)                                │
 │     └── Rising/falling patterns, question intonation                   │
 │                                                                         │
-│  🔄 Week 3 — Stress & Rhythm (IN PROGRESS)          ◄── You are here  │
+│  [ACTIVE] Week 3 — Stress & Rhythm (IN PROGRESS)     <-- You are here  │
 │     └── Word stress, sentence rhythm, weak forms                       │
 │     └── Focus: Your stress score is 65% — extra drills added           │
 │                                                                         │
@@ -228,7 +296,7 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 │     └── Real-time AI tutor conversations                               │
 │     └── Content will auto-update based on your progress                │
 │                                                                         │
-│  📊 Weak Areas (auto-detected):                                        │
+│  [ANALYTICS] Weak Areas (auto-detected):                                        │
 │     • Pitch similarity: 62% → extra intonation drills scheduled        │
 │     • Vowel quality: 70% → vowel-focused exercises added               │
 │     • /θ/ sound: frequently replaced with /t/ → targeted practice      │
@@ -247,7 +315,7 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 
 ---
 
-## 🏗️ System Architecture
+## <img src="https://img.shields.io/badge/-System_Architecture-636E72?style=for-the-badge&logo=diagramsdotnet&logoColor=white" height="28"/>
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -294,14 +362,14 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 
 ---
 
-## 🔄 How It Works
+## <img src="https://img.shields.io/badge/-How_It_Works-00B894?style=for-the-badge&logo=processwire&logoColor=white" height="28"/>
 
 ### End-to-End Pipeline
 
 ```
  ① Record          ② Transcribe        ③ Generate Reference     ④ Extract Features
 ┌──────────┐      ┌──────────┐         ┌──────────┐             ┌──────────────────┐
-│ 🎤 User  │─────▶│  Vosk /  │────────▶│ pyttsx3  │────────────▶│ librosa: MFCC,   │
+│  User   │─────▶│  Vosk /  │────────▶│ pyttsx3  │────────────▶│ librosa: MFCC,   │
 │  speaks  │ WebM │ Whisper  │ text +  │ British  │ native WAV  │   RMS, Spectral  │
 │          │──┐   │   STT    │ stamps  │   TTS    │             │ Praat: F0, F1-F3 │
 └──────────┘  │   └──────────┘         └──────────┘             │ g2p_en: Phonemes │
@@ -339,7 +407,7 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 
 ---
 
-## 🛠️ Tech Stack
+## <img src="https://img.shields.io/badge/-Tech_Stack-0984E3?style=for-the-badge&logo=stackshare&logoColor=white" height="28"/>
 
 ### AI / Machine Learning
 
@@ -409,7 +477,7 @@ Every user gets a **unique, auto-generated learning roadmap** based on their per
 
 ---
 
-## 📁 Project Structure
+## <img src="https://img.shields.io/badge/-Project_Structure-636E72?style=for-the-badge&logo=files&logoColor=white" height="28"/>
 
 ```
 demo/
@@ -504,7 +572,7 @@ demo/
 
 ---
 
-## 🚀 Getting Started
+## <img src="https://img.shields.io/badge/-Getting_Started-00CEC9?style=for-the-badge&logo=rocket&logoColor=white" height="28"/>
 
 ### Prerequisites
 
@@ -585,7 +653,7 @@ API Docs:  http://localhost:8000/docs
 
 ---
 
-## 📡 API Reference
+## <img src="https://img.shields.io/badge/-API_Reference-E17055?style=for-the-badge&logo=fastapi&logoColor=white" height="28"/>
 
 ### REST Endpoints
 
@@ -644,7 +712,7 @@ curl -X POST http://localhost:8000/api/shadowing/assess \
 
 ---
 
-## 🧠 Custom Neural Network
+## <img src="https://img.shields.io/badge/-Custom_Neural_Network-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" height="28"/>
 
 ### Architecture
 
@@ -682,7 +750,7 @@ Output: [accuracy, fluency, completeness, prosody, total]
 
 ---
 
-## 🎨 Customization
+## <img src="https://img.shields.io/badge/-Customization-A29BFE?style=for-the-badge&logo=css3&logoColor=white" height="28"/>
 
 - **Theme colours** — Edit CSS variables in `index.css` under `:root`
 - **Dashboard styles** — Modify `Dashboard.css`
@@ -692,7 +760,7 @@ Output: [accuracy, fluency, completeness, prosody, total]
 
 ---
 
-## 📱 Responsive Design
+## <img src="https://img.shields.io/badge/-Responsive_Design-6C5CE7?style=for-the-badge&logo=responsivedesign&logoColor=white" height="28"/>
 
 The dashboard is fully responsive and adapts to different screen sizes:
 
@@ -704,12 +772,12 @@ The dashboard is fully responsive and adapts to different screen sizes:
 
 ---
 
-## 📄 License
+## <img src="https://img.shields.io/badge/-License-2F3542?style=for-the-badge&logo=opensourceinitiative&logoColor=white" height="28"/>
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  Built with ❤️ for British English learners
+  Built with care for British English learners
 </p>
