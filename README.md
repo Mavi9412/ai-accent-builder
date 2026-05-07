@@ -5,7 +5,7 @@
 <h1 align="center">🎙️ AI Accent Builder</h1>
 
 <p align="center">
-  <strong>An AI-powered British English accent training system with real-time pronunciation analysis, hybrid scoring, and interactive feedback.</strong>
+  <strong>A complete AI-powered British English accent training platform with real-time WebSocket monitoring, adaptive course engine, intelligent LLM tutor, and modern analytics dashboard.</strong>
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ Using the transcribed text, a British English reference speech sample is generat
 
 Accent comparison is then performed using multiple techniques: **Dynamic Time Warping (fastdtw)** aligns pitch, MFCC, and energy features spoken at different speeds; **Pearson correlation** measures similarity in pitch and energy contours; **ratio-based timing analysis** evaluates rhythm and stress balance; and **Levenshtein edit distance** detects pronunciation and phoneme-level deviations. In addition, a custom **PyTorch-based pronunciation scoring model** trained on the **SpeechOcean762** dataset predicts pronunciation quality across accuracy, fluency, completeness, prosody, and overall score.
 
-These results are combined using a **weighted scoring system** that evaluates phoneme accuracy, pitch similarity, timing, stress, vowel quality, and fluency to produce detailed accent scores at sentence, word, and phoneme levels. The feedback is presented visually and audibly through the frontend, where incorrect words and phonemes are highlighted, correct British accent segments are playable, and simple improvement tips are shown. To support natural conversation practice, the transcribed text is also processed through British English grammar and vocabulary modules using **LanguageTool**, **FLAN-T5**, and **spaCy**, while follow-up conversational questions are generated using the **Google Gemini API**. All scores, sessions, and progress data are stored in a **FastAPI** backend with **SQLite**, enabling long-term progress tracking and continuous improvement through repeated practice sessions.
+These results are combined using a **weighted scoring system** that evaluates phoneme accuracy, pitch similarity, timing, stress, vowel quality, and fluency to produce detailed accent scores at sentence, word, and phoneme levels. The feedback is presented visually and audibly through the frontend, where incorrect words and phonemes are highlighted, correct British accent segments are playable, and simple improvement tips are shown. To support natural conversation practice, the transcribed text is also processed through British English grammar and vocabulary modules using **LanguageTool**, **FLAN-T5**, and **spaCy**, while follow-up conversational questions are generated using the **Google Gemini API**. The system also features a **smart monitoring dashboard** with real-time Chart.js analytics, an **adaptive course engine** that dynamically adjusts content based on user mistakes and skill level, and an **AI tutor powered by Gemini LLM** that acts as a real British English teacher — analysing mistakes, providing improvement tips, and asking follow-up questions to encourage continuous practice. All scores, sessions, and progress data are stored through a **FastAPI** backend with **SQLite**, with **WebSocket connections** enabling real-time feedback, ultimately helping users gradually adopt authentic British English accent patterns through personalised, data-driven learning.
 
 ---
 
@@ -47,21 +47,130 @@ These results are combined using a **weighted scoring system** that evaluates ph
 | Feature | Description |
 |---------|-------------|
 | **Shadowing Practice** | Listen to native British audio, record your speech, and get scored across 6 metrics |
-| **Real-Time Feedback** | WebSocket-based phoneme-by-phoneme feedback with < 500ms latency |
+| **Real-Time WebSocket Feedback** | Live phoneme-by-phoneme feedback with < 500ms latency via persistent WebSocket connections |
 | **Hybrid Scoring** | Combines rule-based, signal-processing, and ML approaches for accurate assessment |
 | **Grammar Checking** | British English grammar correction with LanguageTool + FLAN-T5 |
-| **Conversation Practice** | AI-powered conversation with follow-up question generation |
-| **Progress Tracking** | Long-term analytics, session history, and improvement trends |
+| **AI Tutor (Gemini LLM)** | A real AI tutor that analyses your mistakes, explains how to improve, gives tips, and asks follow-up questions |
+| **Adaptive Course Engine** | Dynamically updates course content based on your weak areas and skill level |
+| **Smart Monitoring Dashboard** | Modern Chart.js-powered analytics with real-time performance tracking |
+| **Progress Tracking** | Long-term session history, improvement trends, and streak tracking |
 | **PDF Reports** | Downloadable assessment reports with charts and detailed scores |
 
-### 📊 Dashboard
+---
 
-- Modern, responsive UI with smooth animations and transitions
-- Interactive charts powered by **Chart.js**
-- Collapsible sidebar navigation
-- User progress tracking and analytics
-- Module cards with progress indicators
-- Fully responsive — Desktop, Tablet, and Mobile
+### 📊 Smart Monitoring Dashboard
+
+A modern, visually rich dashboard that monitors every aspect of the user's learning journey in real time:
+
+- **Live Performance Charts** — Interactive line, bar, doughnut, and radar charts powered by **Chart.js** showing scores over time, metric breakdowns, and session comparisons
+- **Collapsible Sidebar Navigation** — Quick access to all modules with badge indicators for pending tasks
+- **Stats Grid** — At-a-glance cards displaying overall score, total sessions, current streak, accuracy rate, and time practised
+- **Module Progress Cards** — Visual progress bars for each learning module (Shadowing, Pronunciation, Grammar, Conversation)
+- **Session Timeline** — Chronological view of all practice sessions with per-session scores
+- **Responsive Layout** — Fully adaptive from desktop (4-column charts) to tablet (2-column) to mobile (stacked)
+- **Smooth Animations** — Micro-interactions, hover effects, and transition animations for a premium feel
+- **Dark / Light Theme** — CSS variable-based theming defined in `index.css`
+
+---
+
+### 🔌 Real-Time WebSocket Architecture
+
+The platform uses **persistent WebSocket connections** for all real-time features, ensuring instant feedback without HTTP overhead:
+
+```
+Client (React / Flutter)                    Server (FastAPI)
+       │                                          │
+       │ ──── ws://localhost:8000/ws/pronunciation ─►│
+       │                                          │
+       │ ──── Send target text ─────────────────► │
+       │                                          │
+       │ ──── Stream audio chunks (16kHz) ──────► │  ← Process each chunk
+       │                                          │
+       │ ◄──── Phoneme update (every ~500ms) ──── │  ← Vosk partial result
+       │ ◄──── Prosody score update ────────────── │  ← librosa + PyTorch
+       │ ◄──── Live metric bars ────────────────── │  ← Real-time UI update
+       │                                          │
+       │ ──── Stop signal ──────────────────────► │
+       │ ◄──── Final assessment JSON ───────────── │
+       │                                          │
+```
+
+**WebSocket Endpoints:**
+
+| Endpoint | Purpose | Data Flow |
+|----------|---------|----------|
+| `/ws/pronunciation` | Real-time phoneme feedback during recording | Audio chunks → phoneme + prosody updates |
+| `/ws/transcribe` | Live transcription display | Audio chunks → partial text updates |
+| `/ws/tutor` | AI tutor conversation stream | User message → streamed LLM response |
+
+---
+
+### 🧑‍🏫 AI Tutor — Gemini LLM as Your Real Tutor
+
+The platform integrates **Google Gemini (gemini-2.5-flash)** and **FLAN-T5** as an intelligent, context-aware tutor that behaves like a real British English teacher:
+
+| Tutor Capability | How It Works |
+|------------------|--------------|
+| **Mistake Analysis** | After each session, the tutor receives your scores, transcription, and error details — then explains exactly what went wrong |
+| **Improvement Tips** | Provides specific, actionable tips like *"Try dropping the 'r' at the end of 'water' — British RP uses a silent 'r'"* |
+| **Follow-Up Questions** | Asks contextual follow-up questions to keep you practising — *"You mentioned going to the shop. What did you buy there?"* |
+| **Grammar Feedback** | Highlights grammar mistakes inline with corrections and British English alternatives |
+| **Vocabulary Coaching** | Suggests British vocabulary swaps (e.g., *"store → shop"*, *"apartment → flat"*) |
+| **Encouragement** | Provides positive reinforcement and tracks improvement trends |
+| **Adaptive Difficulty** | Adjusts question complexity based on your current skill level |
+
+**Tutor Flow:**
+```
+User speaks → STT transcription → Grammar check → Accent scoring
+                                        │
+                                        ▼
+                              ┌──────────────────┐
+                              │   GEMINI LLM     │
+                              │  Context:        │
+                              │  • User message  │
+                              │  • Score: 72%    │
+                              │  • Errors: [..]  │
+                              │  • Skill: B1     │
+                              │  • History: [..] │
+                              └────────┬─────────┘
+                                       │
+                                       ▼
+                              ┌──────────────────┐
+                              │ Response:        │
+                              │ ✅ Feedback      │
+                              │ 💡 Tips          │
+                              │ 📝 Correction    │
+                              │ ❓ Follow-up Q   │
+                              └──────────────────┘
+```
+
+---
+
+### 📚 Adaptive Course Engine
+
+The platform **dynamically adjusts course content** based on your performance, mistakes, and skill level — so you always practise what you need most:
+
+| Feature | Description |
+|---------|-------------|
+| **Skill-Level Detection** | Automatically classifies user as Beginner / Intermediate / Advanced based on cumulative scores |
+| **Weak-Area Identification** | Analyses the 6 accent metrics to find your weakest areas (e.g., low pitch similarity → more intonation drills) |
+| **Dynamic Content Selection** | Selects practice sentences and exercises that target your specific weaknesses |
+| **Progressive Difficulty** | Gradually increases sentence length, speed, and complexity as you improve |
+| **Mistake-Based Drills** | If you consistently mispronounce certain phonemes (e.g., /θ/ → /t/), the system creates targeted drills |
+| **Course Modules** | Structured modules for Intonation, Stress, Vowels, Connected Speech, and Conversation |
+
+**Adaptive Flow:**
+```
+ Session Scores                     Adaptive Engine                    Updated Content
+┌──────────────┐                  ┌──────────────────┐               ┌──────────────────┐
+│ Phoneme: 85% │                  │ Analyse weakest  │               │ Next Session:    │
+│ Pitch:   62% │ ◄── weakest ──► │ metrics across    │──────────────►│ • Intonation     │
+│ Timing:  90% │                  │ last 5 sessions   │               │   practice ×3    │
+│ Stress:  78% │                  │                   │               │ • Pitch matching │
+│ Vowel:   70% │ ◄── weak ─────► │ Generate targeted │               │   exercises      │
+│ Fluency: 88% │                  │ practice content  │               │ • Vowel drills   │
+└──────────────┘                  └──────────────────┘               └──────────────────┘
+```
 
 ---
 
