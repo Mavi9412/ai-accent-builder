@@ -130,14 +130,221 @@ These results are combined using a **weighted scoring system** that evaluates ph
 
 A modern, visually rich dashboard that monitors every aspect of the user's learning journey in real time:
 
-- **Live Performance Charts** — Interactive line, bar, doughnut, and radar charts powered by **Chart.js** showing scores over time, metric breakdowns, and session comparisons
-- **Collapsible Sidebar Navigation** — Quick access to all modules with badge indicators for pending tasks
-- **Stats Grid** — At-a-glance cards displaying overall score, total sessions, current streak, accuracy rate, and time practised
-- **Module Progress Cards** — Visual progress bars for each learning module (Shadowing, Pronunciation, Grammar, Conversation)
-- **Session Timeline** — Chronological view of all practice sessions with per-session scores
-- **Responsive Layout** — Fully adaptive from desktop (4-column charts) to tablet (2-column) to mobile (stacked)
-- **Smooth Animations** — Micro-interactions, hover effects, and transition animations for a premium feel
-- **Dark / Light Theme** — CSS variable-based theming defined in `index.css`
+- <img src="https://img.shields.io/badge/-Charts-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" height="18"/> **Live Performance Charts** — Interactive line, bar, doughnut, and radar charts powered by <img src="https://img.shields.io/badge/-Chart.js-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" height="16"/> showing scores over time, metric breakdowns, and session comparisons
+- <img src="https://img.shields.io/badge/-Navigation-0984E3?style=flat-square&logo=weebly&logoColor=white" height="18"/> **Collapsible Sidebar Navigation** — Quick access to all modules with badge indicators for pending tasks
+- <img src="https://img.shields.io/badge/-Stats-00B894?style=flat-square&logo=databricks&logoColor=white" height="18"/> **Stats Grid** — At-a-glance cards displaying overall score, total sessions, current streak, accuracy rate, and time practised
+- <img src="https://img.shields.io/badge/-Progress-FDCB6E?style=flat-square&logo=probot&logoColor=white" height="18"/> **Module Progress Cards** — Visual progress bars for each learning module (Shadowing, Pronunciation, Grammar, Conversation)
+- <img src="https://img.shields.io/badge/-Timeline-E17055?style=flat-square&logo=clockify&logoColor=white" height="18"/> **Session Timeline** — Chronological view of all practice sessions with per-session scores
+- <img src="https://img.shields.io/badge/-Responsive-6C5CE7?style=flat-square&logo=responsivedesign&logoColor=white" height="18"/> **Responsive Layout** — Fully adaptive from desktop (4-column charts) to tablet (2-column) to mobile (stacked)
+- <img src="https://img.shields.io/badge/-Animations-FF7000?style=flat-square&logo=framer&logoColor=white" height="18"/> **Smooth Animations** — Micro-interactions, hover effects, and transition animations for a premium feel
+- <img src="https://img.shields.io/badge/-Theme-2F3542?style=flat-square&logo=eclipse&logoColor=white" height="18"/> **Dark / Light Theme** - <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" height="16"/> variable-based theming defined in `index.css`
+
+<br/>
+
+<h3 align="center">
+  <img src="https://img.shields.io/badge/-📊_Analytics_Dashboard_Preview-1a1a2e?style=for-the-badge&logo=grafana&logoColor=4CC9F0" height="34"/>
+</h3>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/-Live_Visualizations-4A90E2?style=flat-square&logo=chartdotjs&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-Project_Color_Schema-7209B7?style=flat-square&logo=materialdesign&logoColor=white" height="20"/>
+  <img src="https://img.shields.io/badge/-Material_Design_Inspired-2C3E50?style=flat-square&logo=google&logoColor=white" height="20"/>
+</p>
+
+<table>
+<tr>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-📈_Weekly_Progress-4361EE?style=flat-square&logo=chartdotjs&logoColor=white" height="22"/> Pronunciation Scores
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'xyChart': {'backgroundColor': '#f6f9fc', 'titleColor': '#2C3E50', 'xAxisLabelColor': '#7F8C8D', 'yAxisLabelColor': '#7F8C8D', 'plotColorPalette': '#4361EE, #F72585'}}}}%%
+xychart-beta
+    title "Weekly Pronunciation Score Trend"
+    x-axis ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    y-axis "Score %" 40 --> 100
+    bar [62, 67, 71, 74, 79, 86, 93]
+    line [62, 67, 71, 74, 79, 86, 93]
+```
+
+</td>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-🎯_Skill_Breakdown-7209B7?style=flat-square&logo=target&logoColor=white" height="22"/> Phoneme Accuracy
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'pie1': '#4361EE', 'pie2': '#F72585', 'pie3': '#FF9E00', 'pie4': '#4CC9F0', 'pie5': '#00B4D8', 'pie6': '#FFD60A', 'pie7': '#FF4D6D', 'pieTitleTextColor': '#2C3E50', 'pieSectionTextColor': '#ffffff', 'pieLegendTextColor': '#2C3E50', 'pieOuterStrokeColor': '#f6f9fc'}}}%%
+pie title "Phoneme Mastery Distribution"
+    "Vowels (ɪ, æ, ɒ, ʌ)" : 38
+    "Consonants (θ, ð, ŋ)" : 28
+    "Diphthongs (aɪ, eɪ)" : 18
+    "Connected Speech" : 10
+    "Stress & Rhythm" : 6
+```
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-⚡_Scoring_Pipeline-4CC9F0?style=flat-square&logo=fastapi&logoColor=white" height="22"/> Real-Time Analysis Flow
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4361EE', 'primaryBorderColor': '#357ABD', 'primaryTextColor': '#ffffff', 'secondaryColor': '#F72585', 'tertiaryColor': '#4CC9F0', 'noteBkgColor': '#FFD60A', 'noteTextColor': '#2C3E50', 'actorBkg': '#4A90E2', 'actorTextColor': '#ffffff', 'actorBorder': '#357ABD', 'signalColor': '#2C3E50', 'signalTextColor': '#2C3E50', 'sequenceNumberColor': '#ffffff'}}}%%
+sequenceDiagram
+    participant U as 🎤 User
+    participant WS as 🔌 WebSocket
+    participant STT as 🗣️ Vosk / Whisper
+    participant AI as 🧠 PyTorch Scorer
+    participant LLM as 🤖 Mistral / Gemini
+
+    U->>WS: Audio Stream (WebM)
+    WS->>STT: WAV Conversion
+    STT->>STT: Transcribe Speech
+    STT->>AI: 26-dim Feature Vector
+    AI->>AI: Neural Net + Heuristics
+    AI->>LLM: Score + Error Map
+    LLM->>LLM: Generate Feedback
+    LLM->>WS: Tips + Corrections
+    WS->>U: Live Results (< 500ms)
+```
+
+</td>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-🗺️_Skill_Matrix-FF9E00?style=flat-square&logo=probot&logoColor=white" height="22"/> Learning Proficiency
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'quadrant1Fill': '#d4edda', 'quadrant2Fill': '#fff3cd', 'quadrant3Fill': '#f8d7da', 'quadrant4Fill': '#cce5ff', 'quadrant1TextFill': '#155724', 'quadrant2TextFill': '#856404', 'quadrant3TextFill': '#721c24', 'quadrant4TextFill': '#004085', 'quadrantTitleFill': '#2C3E50', 'quadrantPointFill': '#F72585', 'quadrantPointTextFill': '#2C3E50', 'quadrantXAxisTextFill': '#7F8C8D', 'quadrantYAxisTextFill': '#7F8C8D'}}}%%
+quadrantChart
+    title "Skill Proficiency Matrix"
+    x-axis "Beginner" --> "Advanced"
+    y-axis "Low Accuracy" --> "High Accuracy"
+    quadrant-1 "Mastered ✅"
+    quadrant-2 "Needs Practice"
+    quadrant-3 "Getting Started"
+    quadrant-4 "Improving 📈"
+    "Vowel Sounds": [0.82, 0.88]
+    "Consonant Pairs": [0.72, 0.75]
+    "Stress Patterns": [0.55, 0.60]
+    "Intonation": [0.45, 0.50]
+    "Connected Speech": [0.30, 0.35]
+    "Rhythm & Flow": [0.65, 0.70]
+```
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-📊_Session_Metrics-F72585?style=flat-square&logo=clockify&logoColor=white" height="22"/> 6-Metric Breakdown
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'xyChart': {'backgroundColor': '#f6f9fc', 'titleColor': '#2C3E50', 'xAxisLabelColor': '#7F8C8D', 'yAxisLabelColor': '#7F8C8D', 'plotColorPalette': '#F72585, #7209B7'}}}}%%
+xychart-beta
+    title "Accent Scoring — 6 Core Metrics"
+    x-axis ["Phoneme", "Pitch", "Energy", "Rhythm", "Stress", "Fluency"]
+    y-axis "Score %" 0 --> 100
+    bar [88, 76, 82, 71, 65, 79]
+```
+
+</td>
+<td width="50%">
+
+#### <img src="https://img.shields.io/badge/-🔄_Adaptive_Engine-00B4D8?style=flat-square&logo=processwire&logoColor=white" height="22"/> User Session Flow
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4361EE', 'primaryBorderColor': '#357ABD', 'primaryTextColor': '#ffffff', 'lineColor': '#4A90E2', 'secondaryColor': '#4CC9F0', 'tertiaryColor': '#F72585'}}}%%
+stateDiagram-v2
+    [*] --> Recording : 🎤 Start
+    Recording --> Processing : Audio Captured
+    Processing --> Scoring : Features Extracted
+    Scoring --> Feedback : Score Computed
+    Feedback --> AITutor : LLM Analysis
+    AITutor --> Adaptive : Weak Areas Updated
+    Adaptive --> Recording : Next Drill
+    Adaptive --> Report : Session Done
+    Report --> [*] : 📄 PDF
+
+    state Processing {
+        [*] --> NoiseReduction
+        NoiseReduction --> Transcription
+        Transcription --> PhonemeExtraction
+        PhonemeExtraction --> FeatureVector26D
+    }
+```
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="100%">
+
+#### <img src="https://img.shields.io/badge/-🏗️_System_Architecture-2C3E50?style=flat-square&logo=diagramsdotnet&logoColor=white" height="22"/> End-to-End Data Flow
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4361EE', 'primaryBorderColor': '#357ABD', 'primaryTextColor': '#ffffff', 'lineColor': '#4A90E2', 'secondaryColor': '#F72585', 'tertiaryColor': '#4CC9F0'}}}%%
+flowchart LR
+    A["🎤 User Audio"] --> B["🔌 WebSocket"]
+    B --> C["🔇 Noise Reduction"]
+    C --> D["🗣️ Vosk / Whisper STT"]
+    D --> E["🔤 g2p_en Phonemes"]
+    E --> F["📊 Feature Extraction"]
+    F --> G["🧠 PyTorch Scorer"]
+    G --> H{"Score > 70?"}
+    H -->|Yes| I["✅ Pass — Next Level"]
+    H -->|No| J["🔄 Targeted Drills"]
+    G --> K["🤖 Mistral / Gemini LLM"]
+    K --> L["💬 Real-time Feedback"]
+    L --> M["📱 React / Flutter UI"]
+
+    style A fill:#4361EE,stroke:#357ABD,color:#fff
+    style B fill:#FF9E00,stroke:#e68a00,color:#fff
+    style C fill:#4CC9F0,stroke:#00B4D8,color:#fff
+    style D fill:#7209B7,stroke:#5a0791,color:#fff
+    style E fill:#F72585,stroke:#d41e6e,color:#fff
+    style F fill:#00B4D8,stroke:#009bb8,color:#fff
+    style G fill:#4361EE,stroke:#357ABD,color:#fff
+    style H fill:#FFD60A,stroke:#e6c009,color:#2C3E50
+    style I fill:#2ECC71,stroke:#27AE60,color:#fff
+    style J fill:#E74C3C,stroke:#C0392B,color:#fff
+    style K fill:#FF9E00,stroke:#e68a00,color:#fff
+    style L fill:#F72585,stroke:#d41e6e,color:#fff
+    style M fill:#4A90E2,stroke:#357ABD,color:#fff
+```
+
+</td>
+</tr>
+</table>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/-Color_Palette-2C3E50?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-4361EE?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-7209B7?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-F72585?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-FF9E00?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-4CC9F0?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-00B4D8?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-FFD60A?style=flat-square" height="20"/>
+  <img src="https://img.shields.io/badge/-■-FF4D6D?style=flat-square" height="20"/>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/-Live_in_React_Dashboard-4A90E2?style=flat-square&logo=react&logoColor=white" height="20"/>
+  &nbsp;
+  <img src="https://img.shields.io/badge/-Powered_by_Chart.js_4.3-F72585?style=flat-square&logo=chartdotjs&logoColor=white" height="20"/>
+  &nbsp;
+  <img src="https://img.shields.io/badge/-WebSocket_Real--Time-4361EE?style=flat-square&logo=socketdotio&logoColor=white" height="20"/>
+  &nbsp;
+  <img src="https://img.shields.io/badge/-Material_UI-00B4D8?style=flat-square&logo=materialdesign&logoColor=white" height="20"/>
+</p>
 
 ---
 
